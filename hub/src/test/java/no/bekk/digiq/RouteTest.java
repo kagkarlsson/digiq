@@ -1,54 +1,57 @@
 package no.bekk.digiq;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
 import no.bekk.digiq.dao.MessageDao;
+import no.bekk.digiq.routes.IncomingRoute;
 
 import org.apache.camel.builder.NotifyBuilder;
 import org.junit.Test;
 
-public class RouteTest extends DigiqCamelTest {
+public class RouteTest extends DigiqCamelTestBase {
 
 	@Resource
 	private TestProducer digiqClient;
-
 	@Resource
 	private MessageDao messageDao;
-
+	@Resource
+	private StoreMessage storeMessage;
 	@Test
 	public void test() throws Exception {
-		NotifyBuilder notify = new NotifyBuilder(context).from("activemq.*")
-				.whenDone(1).wereSentTo("bean*").and().from("timer:")
-				.whenDone(1).wereSentTo("bean*").create();
+		startCamel(new IncomingRoute(storeMessage));
+
+		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 
 		digiqClient.test();
 
-		notify.matches(5, TimeUnit.SECONDS);
+		notify.matches(3, TimeUnit.SECONDS);
 
 		assertEquals(1, messageDao.count());
-
 	}
-	
-	
 
-	// @Test
-	// public void testNoConnectionToDatabase() throws Exception {
-	// RouteBuilder rb = new RouteBuilder() {
-	// public void configure() throws Exception {
-	// interceptSendToEndpoint("bean:storeMessage").throwException(
-	// new ConnectException("Cannot connect"));
-	// }
-	// };
-	// camelContext.getRouteDefinitions();
-	// Route route = camelContext.getRoute("fromDigiqNy");
-	// route.adviceWith(camelContext, rb);
-	// String sql = "select count(*) from partner_metric";
-	// assertEquals(0, jdbcTemplate.queryForInt(sql));
-	// jmsTemplate.sendBody("activemq:queue:partners", xml);
-	// Thread.sleep(5000);
-	// assertEquals(0, jdbcTemplate.queryForInt(sql));
-	// }
+	@Test
+	public void testDatabaseError() throws Exception {
+		assertEquals(0, messageDao.count());
+		
+		StoreMessageImpl mockStore = mock(StoreMessageImpl.class);
+		doThrow(new RuntimeException()).when(mockStore).store(
+				any(Forsendelse.class));
+		startCamel(new IncomingRoute(mockStore));
 
+		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
+
+		digiqClient.test();
+		notify.matches(
+				5, TimeUnit.SECONDS);
+		
+		assertEquals(0, messageDao.count());
+		assertNotNull(consumer.receiveBodyNoWait("activemq:ActiveMQ.DLQ"));
+		assertNull(consumer.receiveBodyNoWait("activemq:no.bekk.digiq.ny"));
+	}
 }

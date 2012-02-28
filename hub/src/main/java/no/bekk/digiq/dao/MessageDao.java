@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class MessageDao {
 
 	private final JdbcTemplate template;
+	
 	@Autowired
 	public MessageDao(JdbcTemplate template) {
 		this.template = template;
@@ -25,13 +26,13 @@ public class MessageDao {
 		template.update("insert into message(digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipcode, city, country, content, status)" +
 				" values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.digipostAddress, m.personalIdentificationNumber, m.name, m.addressline1, m.addressline2, m.zipCode, m.city, m.country, m.content, m.status.name());
 	}
-	
+
 	public List<Message> listToIdentification() {
 		return listWithStatus(Status.IDENTIFY);
 	}
 	
 	public int count(){
-		return template.queryForInt("select count(* from message");
+		return template.queryForInt("select count(*) from message");
 	}
 
 	private List<Message> listWithStatus(Status identify) {

@@ -3,8 +3,11 @@ package no.bekk.digiq;
 import javax.annotation.Resource;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spring.SpringCamelContext;
 import org.apache.camel.test.CamelTestSupport;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -16,16 +19,12 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-		DirtiesContextTestExecutionListener.class,
-		TransactionalTestExecutionListener.class })
-@Transactional
+		DirtiesContextTestExecutionListener.class })
 @ContextConfiguration(locations = { "classpath:testApplicationContext.xml" })
-public class DigiqCamelTest extends CamelTestSupport implements
+public class DigiqCamelTestBase extends CamelTestSupport implements
 		ApplicationContextAware {
 
 	@Resource
@@ -34,9 +33,16 @@ public class DigiqCamelTest extends CamelTestSupport implements
 	protected JdbcTemplate jdbcTemplate;
 	private ApplicationContext applicationContext;
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+		setUseRouteBuilder(false);
 		super.setUp();
+	}
+
+	@After
+	public void after() throws Exception {
+		super.tearDown();
+		jdbcTemplate.update("delete from message");
 	}
 
 	@Override
@@ -44,8 +50,22 @@ public class DigiqCamelTest extends CamelTestSupport implements
 		CamelContext context = new SpringCamelContext(applicationContext);
 
 		context.setLazyLoadTypeConverters(isLazyLoadingTypeConverter());
-		
+
 		return context;
+	}
+
+	protected void startCamel(RouteBuilder routeBuilder) throws Exception {
+		startCamel(new RouteBuilder[] { routeBuilder });
+	}
+
+	protected void startCamel(RouteBuilder[] createRouteBuilders)
+			throws Exception {
+		for (RouteBuilder builder : createRouteBuilders) {
+			log.debug("Using created route builder: " + builder);
+			context.addRoutes(builder);
+		}
+		log.info("Starting context with {} routes.",context.getRoutes().size());
+		context.start();
 	}
 
 	@Override

@@ -21,8 +21,6 @@ public class IncomingRoute extends RouteBuilder{
 		from("activemq:no.bekk.digiq.ny")
 		.id("fromDigiqNy")
 		.policy("jmsPolicy")
-//		.convertBodyTo(String.class)
-//		.to("sql:insert into message(navn) values (#)?dataSourceRef=dataSource");
 		.bean(storeMessage);
 	}
 

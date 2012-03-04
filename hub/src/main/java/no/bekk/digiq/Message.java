@@ -12,10 +12,12 @@ public class Message {
 	public String country;
 	public byte[] content;
 	public Status status;
+	public final long id;
 
-	public Message(String digipostAddress, String personalIdentificationNumber,
+	public Message(long id, String digipostAddress, String personalIdentificationNumber,
 			String name, String addressline1, String addressline2,
 			String zipCode, String city, String country, byte[] content, Status status) {
+		this.id = id;
 		this.digipostAddress = digipostAddress;
 		this.personalIdentificationNumber = personalIdentificationNumber;
 		this.name = name;
@@ -29,7 +31,7 @@ public class Message {
 	}
 
 	public static Message fromForsendelse(Forsendelse f) {
-		return new Message(f.digipostAdresse, f.foedselsnummer, f.navn,
+		return new Message(0, f.digipostAdresse, f.foedselsnummer, f.navn,
 				f.adresselinje1, f.adresselinj2, f.postnummer, f.poststed,
 				f.land, f.pdf, Status.IDENTIFY);
 	}

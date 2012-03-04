@@ -28,7 +28,15 @@ public class MessageDao {
 	}
 
 	public List<Message> listToIdentification() {
-		return listWithStatus(Status.IDENTIFY);
+		List<Message> toIdentification = listWithStatus(Status.IDENTIFY);
+		for (Message message : toIdentification) {
+			updateStatus(message, Status.NOT_SENT);
+		}
+		return toIdentification;
+	}
+	
+	public void updateStatus(Message m, Status status) {
+		template.update("update message set status = ? where id = ?", status.name(), m.id);
 	}
 	
 	public int count(){
@@ -45,6 +53,7 @@ public class MessageDao {
 		@Override
 		public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new Message(
+					rs.getLong("id"),
 					rs.getString("digipostAddress"),
 					rs.getString("personalIdentificationNumber"),
 					rs.getString("name"),

@@ -14,7 +14,7 @@ import no.bekk.digiq.routes.IncomingRoute;
 import org.apache.camel.builder.NotifyBuilder;
 import org.junit.Test;
 
-public class RouteTest extends DigiqCamelTestBase {
+public class IncomingFromQueueTest extends DigiqCamelTestBase {
 
 	@Resource
 	private TestProducer digiqClient;

@@ -27,7 +27,7 @@ public class MessageDao {
 				" values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.digipostAddress, m.personalIdentificationNumber, m.name, m.addressline1, m.addressline2, m.zipCode, m.city, m.country, m.content, m.status.name());
 	}
 
-	public List<Message> listToIdentification() {
+	public List<Message> reserveMessagesToIdentification() {
 		List<Message> toIdentification = listWithStatus(Status.IDENTIFY);
 		for (Message message : toIdentification) {
 			updateStatus(message, Status.NOT_SENT);
@@ -43,7 +43,7 @@ public class MessageDao {
 		return template.queryForInt("select count(*) from message");
 	}
 
-	private List<Message> listWithStatus(Status identify) {
+	public List<Message> listWithStatus(Status identify) {
 		return template.query("select * from message where status = ?", messageRowMapper, identify.name());
 	}
 

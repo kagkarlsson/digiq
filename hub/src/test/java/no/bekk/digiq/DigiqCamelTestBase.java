@@ -8,6 +8,7 @@ import org.apache.camel.spring.SpringCamelContext;
 import org.apache.camel.test.CamelTestSupport;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -24,6 +25,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
 		DirtiesContextTestExecutionListener.class })
 @ContextConfiguration(locations = { "classpath:testApplicationContext.xml" })
+@Ignore
 public class DigiqCamelTestBase extends CamelTestSupport implements
 		ApplicationContextAware {
 

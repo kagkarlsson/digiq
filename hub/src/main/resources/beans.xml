@@ -22,7 +22,9 @@
 		<property name="transacted" value="true" />
 		<property name="transactionManager" ref="jmsTxManager" />
 	</bean>
-	<amq:broker>
+	<amq:broker persistent="false" 
+           deleteAllMessagesOnStartup="true" 
+           useShutdownHook="true">
 		<amq:transportConnectors>
 			<amq:transportConnector name="openwire"
 				uri="tcp://localhost:61616" />

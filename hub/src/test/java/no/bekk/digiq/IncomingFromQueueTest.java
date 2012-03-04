@@ -51,7 +51,7 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 				5, TimeUnit.SECONDS);
 		
 		assertEquals(0, messageDao.count());
-		assertNotNull(consumer.receiveBodyNoWait("activemq:ActiveMQ.DLQ"));
+		assertNotNull(consumer.receiveBody("activemq:ActiveMQ.DLQ"));
 		assertNull(consumer.receiveBodyNoWait("activemq:no.bekk.digiq.ny"));
 	}
 }

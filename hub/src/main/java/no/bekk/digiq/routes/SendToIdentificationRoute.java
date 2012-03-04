@@ -1,12 +1,9 @@
 package no.bekk.digiq.routes;
 
+import no.bekk.digiq.activities.CreateDigipostZip;
 import no.bekk.digiq.dao.MessageDao;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.kahadb.util.ByteArrayInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,25 +11,23 @@ import org.springframework.stereotype.Component;
 public class SendToIdentificationRoute extends RouteBuilder {
 
 	private final MessageDao messageDao;
+	private final CreateDigipostZip createDigipostZip;
 
 	@Autowired
-	public SendToIdentificationRoute(MessageDao messageDao) {
+	public SendToIdentificationRoute(MessageDao messageDao, CreateDigipostZip createDigipostZip) {
 		this.messageDao = messageDao;
+		this.createDigipostZip = createDigipostZip;
 	}
 
 	@Override
 	public void configure() throws Exception {
 		from("timer://messageTimer?period=1000")
-				.bean(messageDao, "listToIdentification").policy("jdbcPolicy")
-				.process(new Processor() {
-
-					@Override
-					public void process(Exchange exchange) throws Exception {
-						Message in = exchange.getIn();
-						in.setBody(new ByteArrayInputStream("Testing".getBytes()));
-					}
-					
-				})
+				.bean(messageDao, "reserveMessagesToIdentification").policy("jdbcPolicy")
+				.choice()
+				.when(simple("${body.size} == 0"))
+				.stop()
+				.otherwise()
+				.bean(createDigipostZip)
 				.to("sftp://bekk@camelon.os.ergo.no/home/bekk/tmp?password=Gh78)#b34K");
 	}
 

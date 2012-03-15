@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Digipost - grensesnitt for avsendere
+Masseutsendelse request
+-->
+<xsd:schema version="1.0"
+    targetNamespace="http://www.digipost.no/xsd/avsender1_6"
+    xmlns:dp="http://www.digipost.no/xsd/avsender1_6"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0"
+	elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="digipost-common.xsd" />
+
+	<xsd:element name="masseutsendelse">
+        <xsd:annotation>
+            <xsd:documentation>
+                Brukes til å foreta en masseutsendelse av brev i Digipost.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="jobb-innstillinger" type="dp:jobb-innstillinger" minOccurs="1" maxOccurs="1" />
+				<xsd:choice minOccurs="1" maxOccurs="1">
+					<xsd:element name="standard-distribusjon" type="dp:standard-distribusjon" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="afp-distribusjon" type="dp:afp-distribusjon" minOccurs="1" maxOccurs="1" />
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="standard-distribusjon">
+		<xsd:sequence>
+			<xsd:element name="globale-brev-innstillinger" type="dp:brev-innstillinger" minOccurs="0" maxOccurs="1">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	Innstillinger som skal gjelde dersom brevet selv ikke definerer sine egne innstillinger (default brev-innstillinger). Dersom innstillinger er angitt på dokumentnivå, vil disse overstyre de globale innstillingene.
+		            </xsd:documentation>
+		        </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="post" type="dp:dokument-liste" minOccurs="1" maxOccurs="1">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	Dokumenter som skal sendes i denne jobben.
+		            </xsd:documentation>
+		        </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="forsendelser" type="dp:forsendelse-liste" minOccurs="1" maxOccurs="1">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		           		Liste over forsendelser som inngår i denne jobben.
+		            </xsd:documentation>
+		        </xsd:annotation>
+			</xsd:element>
+
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="afp-distribusjon">
+		<xsd:annotation>
+		    <xsd:documentation>
+		   		Innstillinger for å sende brev fra en AFP-fil.
+		    </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="afp-fil" type="xsd:string" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+				    <xsd:documentation>
+				   		Path til AFP-fil, relativ til zip-rot.
+				    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="globale-brev-innstillinger" type="dp:brev-innstillinger" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+				    <xsd:documentation>
+				   		Innstillinger som skal gjelde alle dokumentene i AFP-filen.
+				    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="mottaker-identifikasjon" type="dp:afp-mottaker-identifikasjon" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+				    <xsd:documentation>
+				   		Beskriver hvordan mottakere skal identifiseres fra TLE-felter i AFP-filen.
+				    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+ 			<xsd:element name="antall-dokumenter" type="xsd:int" minOccurs="0" maxOccurs="1">
+				<xsd:annotation>
+				    <xsd:documentation>
+				   		Antall dokumenter AFP-filen skal inneholde. Brukes til å validere at det riktige antallet PDF-filer er blitt generert.
+				    </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="dokument-innstillinger">
+		<xsd:sequence>
+			<xsd:element name="emne" minOccurs="1" maxOccurs="1">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	Emnet for dokumentet, slik det skal vises i Digipost.
+		            </xsd:documentation>
+		        </xsd:annotation>
+		        <xsd:simpleType>
+		        	<xsd:restriction base="xsd:string">
+		        		<xsd:maxLength value="100"/>
+		        	</xsd:restriction>
+		        </xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="brev-innstillinger">
+	    <xsd:complexContent>
+	      <xsd:extension base="dp:dokument-innstillinger">
+	        <xsd:sequence>
+				<xsd:element name="smsVarsling" type="xsd:boolean" minOccurs="1" maxOccurs="1">
+			        <xsd:annotation>
+			            <xsd:documentation>
+			                Angir om mottaker skal varsles på SMS (prisbelagt tilleggstjeneste).
+			            </xsd:documentation>
+			        </xsd:annotation>
+				</xsd:element>
+	        </xsd:sequence>
+	      </xsd:extension>
+	    </xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="dokument-liste">
+        <xsd:annotation>
+            <xsd:documentation>
+            	Liste av dokumenter.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+       		<xsd:element name="dokument" type="dp:dokument" minOccurs="1" maxOccurs="unbounded">
+            	<xsd:annotation>
+	                <xsd:appinfo>
+		            	<jaxb:property name="dokumenter"/>
+		            </xsd:appinfo>
+            	</xsd:annotation>
+       		</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="forsendelse-liste">
+        <xsd:annotation>
+            <xsd:documentation>
+            	Liste av forsendelser.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="forsendelse" type="dp:forsendelse" minOccurs="1" maxOccurs="unbounded">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	En forsendelse.
+		            </xsd:documentation>
+	                <xsd:appinfo>
+		            	<jaxb:property name="forsendelser"/>
+		            </xsd:appinfo>
+		        </xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="dokument" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="id" type="xsd:ID">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	Unik id for dette dokumentet i denne jobben.
+		            </xsd:documentation>
+		        </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="fil" minOccurs="1" maxOccurs="1">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	Filen for dette dokumentet. Path relativ til roten av jobb-zip-arkivet.
+		            	1. Filstien kan ikke starte med whitespace, ".", "/" eller "\".
+		            	2. Filstien kan ikke inneholde "..".
+		            </xsd:documentation>
+		        </xsd:annotation>
+		        <xsd:simpleType>
+		        	<xsd:restriction base="xsd:string">
+		        		<xsd:pattern value="[^\\/\s\.].*"/>
+		        	</xsd:restriction>
+		        </xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="brev">
+	    <xsd:complexContent>
+	      <xsd:extension base="dp:dokument">
+	        <xsd:sequence>
+				<xsd:element name="innstillinger" type="dp:brev-innstillinger" minOccurs="0" maxOccurs="1">
+			        <xsd:annotation>
+			            <xsd:documentation>
+			            	Innstillinger for dette brevet.
+			            </xsd:documentation>
+			        </xsd:annotation>
+				</xsd:element>
+	        </xsd:sequence>
+	      </xsd:extension>
+	    </xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="forsendelse">
+        <xsd:annotation>
+            <xsd:documentation>
+            	En forsendelse er en kobling mellom et dokument og en mottaker.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="brev" minOccurs="1" maxOccurs="1" type="xsd:IDREF" >
+				<xsd:annotation>
+		            <xsd:documentation>
+		            	Id på brevet som skal sendes til denne mottakeren.
+		            </xsd:documentation>
+					<xsd:appinfo>
+						<jaxb:property>
+							<jaxb:baseType name="XmlBrev" />
+						</jaxb:property>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="mottaker" type="dp:mottaker" minOccurs="1" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="afp-mottaker-identifikasjon">
+        <xsd:annotation>
+            <xsd:documentation>
+            	Brukes til å fortelle Digipost hvilke TLE-felter i AFP-filen som skal brukes til mottaker-identifikasjon.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="kunde-id" type="xsd:string" minOccurs="1" maxOccurs="1">
+		        <xsd:annotation>
+		            <xsd:documentation>
+		            	Navnet på TLE-feltet som inneholder avsenders egne unike id for postmottakeren.
+		            </xsd:documentation>
+		        </xsd:annotation>
+			</xsd:element>
+			<xsd:choice minOccurs="1" maxOccurs="1">
+				<xsd:element name="foedselsnummer" type="xsd:string" minOccurs="1" maxOccurs="1">
+			        <xsd:annotation>
+			            <xsd:documentation>
+			            	Navnet på TLE-feltet som inneholder mottakers fødselsnummer.
+			            </xsd:documentation>
+			        </xsd:annotation>
+			    </xsd:element>
+				<xsd:element name="digipostadresse" type="xsd:string" minOccurs="1" maxOccurs="1">
+			        <xsd:annotation>
+			            <xsd:documentation>
+			            	Navnet på TLE-feltet som inneholder mottakers Digipostadresse.
+			            </xsd:documentation>
+			        </xsd:annotation>
+			    </xsd:element>
+
+			    <xsd:sequence>
+		            <xsd:element name="navn" type="dp:afp-navn" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="adresse" type="dp:afp-adresse" minOccurs="1" maxOccurs="1" />
+					<xsd:element name="foedselsdato" type="xsd:string" minOccurs="0" maxOccurs="1" />
+				</xsd:sequence>
+
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

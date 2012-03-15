@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import no.bekk.digiq.Message.Status;
 import no.bekk.digiq.activities.CreateDigipostZip;
+import no.bekk.digiq.activities.GetMessagesToIdentification;
 import no.bekk.digiq.dao.MessageDao;
 import no.bekk.digiq.routes.SendToIdentificationRoute;
 
@@ -16,9 +17,11 @@ import org.junit.Test;
 public class SendToIdentificationTest extends DigiqCamelTestBase {
 
 	@Resource
-	private MessageDao messageDao;
+	private GetMessagesToIdentification getMessagesToIdentification;
 	@Resource
 	private CreateDigipostZip createDigipostZip;
+	@Resource
+	private MessageDao messageDao;
 	private MockEndpoint sftpMock;
 	private SendToIdentificationRoute routes;
 
@@ -26,7 +29,7 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 	public void setUp() throws Exception {
 		super.setUp();
 		sftpMock = getMockEndpoint("mock:sftp");
-		routes = new SendToIdentificationRoute(messageDao, createDigipostZip);
+		routes = new SendToIdentificationRoute(getMessagesToIdentification, createDigipostZip);
 		routes.interceptSendToEndpoint("sftp*").to(sftpMock).skipSendToOriginalEndpoint();	
 	}
 	

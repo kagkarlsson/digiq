@@ -1,6 +1,7 @@
 package no.bekk.digiq;
 
 import no.bekk.digiq.activities.CreateDigipostZip;
+import no.bekk.digiq.activities.GetMessagesToIdentification;
 import no.bekk.digiq.dao.MessageDao;
 import no.bekk.digiq.routes.IncomingRoute;
 import no.bekk.digiq.routes.SendToIdentificationRoute;
@@ -13,21 +14,21 @@ import org.springframework.stereotype.Component;
 public class Routes extends RouteBuilder{
 	
 	private final StoreMessage storeMessage;
-	private final MessageDao messageDao;
 	private CreateDigipostZip createDigipostZip;
+    private final GetMessagesToIdentification getMessagesToIdentification;
 
 	@Autowired
-	public Routes(StoreMessage storeMessage, MessageDao messageDao, CreateDigipostZip createDigipostZip) {
+	public Routes(StoreMessage storeMessage, MessageDao messageDao, CreateDigipostZip createDigipostZip, GetMessagesToIdentification getMessagesToIdentification) {
 		this.storeMessage = storeMessage;
-		this.messageDao = messageDao;
 		this.createDigipostZip = createDigipostZip;
+        this.getMessagesToIdentification = getMessagesToIdentification;
 	}
 
 	@Override
 	public void configure() throws Exception {
 		
 		new IncomingRoute(storeMessage).configure();
-		new SendToIdentificationRoute(messageDao, createDigipostZip).configure();
+		new SendToIdentificationRoute(getMessagesToIdentification, createDigipostZip).configure();
 		
 	}
 

@@ -4,7 +4,7 @@ import no.bekk.digiq.Message.Status;
 
 public class MessageBuilder {
 
-	private long id = 0;
+	private long id = 1;
 	private String digipostAddress;
 	private String personalIdentificationNumber;
 	private String name = "Fornavn Etternavn";

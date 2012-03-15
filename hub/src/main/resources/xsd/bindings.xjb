@@ -1,0 +1,26 @@
+<jxb:bindings version="1.0" 
+  xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+  jxb:extensionBindingPrefixes="xjc">
+
+  <jxb:globalBindings>
+    <xjc:simple />
+    <jxb:javaType name="org.joda.time.DateTime" xmlType="xsd:dateTime"
+        parseMethod="no.bekk.digiq.xml.XSDateTimeCustomBinder.parseDateTime"
+        printMethod="no.bekk.digiq.xml.XSDateTimeCustomBinder.printDateTime"
+        />
+  </jxb:globalBindings>
+
+    <jxb:bindings schemaLocation="masseutsendelse.xsd" node="/xs:schema">
+        <jxb:schemaBindings>
+        	<jxb:package name="no.digipost.xsd.avsender1_6"/>
+            <jxb:nameXmlTransform>
+            	<jxb:elementName prefix="Xml"/>
+                <jxb:typeName prefix="Xml"/>
+                <jxb:anonymousTypeName prefix="Xml"/>
+            </jxb:nameXmlTransform>
+        </jxb:schemaBindings>
+    </jxb:bindings>
+
+</jxb:bindings>

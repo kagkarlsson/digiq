@@ -7,24 +7,39 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.xml.bind.JAXBException;
+
+import no.bekk.digiq.MessageBuilder;
+import no.bekk.digiq.XsdHelper;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+
+import com.google.common.collect.Lists;
 
 public class CreateDigipostZipTest {
 
-	
-	@Before
-	public void setUp(){
-		MockitoAnnotations.initMocks(this);
-	}
-	
-	@Test
-	public void test() throws IOException {
-		CreateDigipostZip activity = new CreateDigipostZip();
+    private Jaxb2Marshaller marshaller;
 
-		InputStream is = activity.createZip(null);
-		assertEquals("mottakersplitt.xml", new ZipInputStream(is).getNextEntry().getName());
-	}
-	
+    @Before
+    public void setUp() throws JAXBException {
+        MockitoAnnotations.initMocks(this);
+        marshaller = XsdHelper.createValidatingJaxbMarshaller();
+    }
+    
+    @Test
+    public void testShouldCreateMottakersplittForOneRecipient() throws IOException {
+        CreateDigipostZip activity = new CreateDigipostZip(marshaller);
+        InputStream is = activity.createZip(Lists.newArrayList(MessageBuilder.newMessage().build()));
+        ZipInputStream zis = new ZipInputStream(is);
+        ZipEntry singleEntry = zis.getNextEntry();
+        assertEquals("mottakersplitt.xml", singleEntry.getName());
+//        byte[] b = new byte[(int) singleEntry.getSize()];
+//        zis.read(b);
+//        
+//        marshaller.unmarshal(new StreamSource(new ByteArrayInputStream(b)));
+    }
+
 }

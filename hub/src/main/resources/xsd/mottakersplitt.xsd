@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!--
+DigiPost - grensesnitt for avsendere
+Mottakersplitt request
+-->
+<xsd:schema version="1.0" 
+    targetNamespace="http://www.digipost.no/xsd/avsender1_6"
+    xmlns:dp="http://www.digipost.no/xsd/avsender1_6"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0"
+	elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="digipost-common.xsd" />
+
+	<xsd:element name="mottakersplitt">
+        <xsd:annotation>
+            <xsd:documentation>
+                Brukes til å identifisere hvilke mottakere som er Digipost-brukere.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="jobb-innstillinger" type="dp:jobb-innstillinger" minOccurs="1" maxOccurs="1" />
+				<xsd:element name="mottakere" type="dp:mottaker-liste"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

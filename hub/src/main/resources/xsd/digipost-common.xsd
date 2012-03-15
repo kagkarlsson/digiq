@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Digipost – grensesnitt for avsendere
+Felles typedefinisjoner
+-->
+<xsd:schema xmlns:dp="http://www.digipost.no/xsd/avsender1_6" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" version="1.0" targetNamespace="http://www.digipost.no/xsd/avsender1_6" jaxb:version="2.0" elementFormDefault="qualified">
+    <xsd:complexType name="jobb-innstillinger">
+        <xsd:annotation>
+            <xsd:documentation>
+                Definerer parametre som gjelder hele jobben.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="avsender-id" type="xsd:long" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		                Avsenders unike kunde-id i Digipost.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="behandler-id" type="xsd:long" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		                Behandlers unike kunde-id i Digipost. Behandleren er den parten som sender jobben på vegne av avsenderen.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="jobb-id" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		                Avsenders unike id for denne masseutsendelse-jobben. Samme id kan ikke benyttes for ulike jobber.
+		            </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:pattern value="[a-zA-Z0-9_.-]{1,100}"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="jobb-navn" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		                Vilkårlig navn/beskrivelse for jobben.
+		            </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="80"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="auto-godkjenn-jobb" type="xsd:boolean" minOccurs="0" maxOccurs="1" default="false"/>
+            <xsd:element name="klientinformasjon" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+						Navn og versjon på avsenderprogram, eventuelt plattform/OS.
+					</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="mottaker-liste">
+        <xsd:annotation>
+            <xsd:documentation>
+            	Liste av mottakere.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="mottaker" type="dp:mottaker" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	En mottaker.
+		            </xsd:documentation>
+		            <xsd:appinfo>
+		            	<jaxb:property name="mottakere"/>
+		            </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="mottaker">
+        <xsd:annotation>
+            <xsd:documentation>
+            	Definerer en Digipost-postmottaker.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="kunde-id" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Avsenders egne unike id for postmottakeren. Et brev kan ikke sendes til den samme kunde-id-en mer enn én gang.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:choice minOccurs="1" maxOccurs="1">
+                <xsd:sequence>
+                    <xsd:element name="navn" type="dp:navn" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Mottakers navn.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="adresse" type="dp:adresse" minOccurs="1" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+				            	Mottakers adresse.
+				            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="foedselsdato" type="xsd:string" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+				            	Mottakers fødselsdato. Kan øke sannsynligheten for sikker identifisering. Format : ddMMyy
+				            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="telefonnummer" type="xsd:string" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+				            	Mottakers telefonnummer. Kan øke sannsynligheten for sikker identifisering. Fortrinnsvis mobilnummer.
+				            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="epostadresse" type="xsd:string" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>
+				            	Mottakers epostadresse. Kan øke sannsynligheten for sikker identifisering.
+				            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:element name="foedselsnummer" type="xsd:string" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+			            	Gyldig norsk fødselsnummer eller D-nummer.
+			            </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="digipostadresse" type="xsd:string" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+							Mottakerens Digipost-adresse.
+						</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="person-alias" type="xsd:string" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>
+							Alias for en identifisert person som ikke har opprettet en Digipost-konto.
+						</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="navn">
+        <xsd:choice minOccurs="1" maxOccurs="1">
+            <xsd:element name="navn-format1" type="dp:navn-format1" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="navn-format2" type="dp:navn-format2" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="navn-format3" type="dp:navn-format3" minOccurs="1" maxOccurs="1"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="navn-format1">
+        <xsd:choice>
+            <xsd:element name="fullt-navn-fornavn-foerst" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+	                    Mottakers fulle navn på formen «Fornavn Mellomnavn Etternavn».
+	                </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="fullt-navn-etternavn-foerst" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+	                    Mottakers fulle navn på formen «Etternavn Fornavn Mellomnavn».
+	                </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="navn-format2">
+        <xsd:sequence>
+            <xsd:element name="fornavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                            Mottakers fornavn.
+                        </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="etternavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                            Mottakers etternavn.
+                        </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="navn-format3">
+        <xsd:sequence>
+            <xsd:element name="fornavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Mottakers fornavn.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="mellomnavn" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Mottakers mellomnavn.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="etternavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Mottakers etternavn.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="afp-navn">
+        <xsd:choice minOccurs="1" maxOccurs="1">
+            <xsd:element name="afp-navn-format1" type="dp:afp-navn-format1" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="afp-navn-format2" type="dp:afp-navn-format2" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="afp-navn-format3" type="dp:afp-navn-format3" minOccurs="1" maxOccurs="1"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="afp-navn-format1">
+        <xsd:choice>
+            <xsd:element name="fullt-navn-fornavn-foerst" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+	                    Navn på TLE-felt som inneholder mottakers fulle navn på formen «Fornavn Mellomnavn Etternavn».
+	                </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="fullt-navn-etternavn-foerst" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+	                    Navn på TLE-felt som inneholder mottakers fulle navn på formen «Etternavn Fornavn Mellomnavn».
+	                </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="afp-navn-format2">
+        <xsd:sequence>
+            <xsd:element name="fornavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                            Navn på TLE-felt som inneholder mottakers fornavn.
+                        </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="etternavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                            Navn på TLE-felt som inneholder mottakers etternavn.
+                        </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="afp-navn-format3">
+        <xsd:sequence>
+            <xsd:element name="fornavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Navn på TLE-felt som inneholder mottakers fornavn.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="mellomnavn" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Navn på TLE-felt som inneholder mottakers mellomnavn.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="etternavn" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Navn på TLE-felt som inneholder mottakers etternavn.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="adresse">
+        <xsd:choice>
+            <xsd:element name="adresse-format1" type="dp:adresse-format1" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="adresse-format2" type="dp:adresse-format2" minOccurs="1" maxOccurs="1"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="adresse-format1">
+        <xsd:sequence>
+            <xsd:element name="adresselinje1" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For gateadresse vil dette være [Testgate 2b]
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresselinje2" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="postnummer" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="poststed" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="land" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="adresse-format2">
+        <xsd:sequence>
+            <xsd:element name="adresse1" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For gateadresse vil dette være: [Gatenavn].
+                        For stedsadresse vil dette være : [Stedsnavn].
+                        For postboksadresse vil dette være : Postboks  [postboksnummer] [sted].
+                        For postboksadresse vil dette være : Serviceboks  [boksnummer].
+                        For utenlandsadresse vil en benytte den kolonnen for å legge inn første adresselinje.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresse2" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For gateadresse vil dette være: [Husnr].
+                        Eventuell adresselinje 2 for utenlandsadresser.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresse3" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For gateadresse vil dette være: [Bokstav].
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresse4" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        For gateadresse vil dette være: [Inngang]
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="postnummer" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="poststed" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="land" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="afp-adresse">
+        <xsd:choice>
+            <xsd:element name="afp-adresse-format1" type="dp:afp-adresse-format1" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="afp-adresse-format2" type="dp:afp-adresse-format2" minOccurs="1" maxOccurs="1"/>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="afp-adresse-format1">
+        <xsd:sequence>
+            <xsd:element name="adresselinje1" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Navn på TLE-felt som inneholder gateadresse [Testgate 2b]
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresselinje2" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Navn på TLE-felt som inneholder postnummer og sted [0128 Oslo]
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="postnummer" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder postnummer.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="poststed" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder poststed.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="land" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder land.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="afp-adresse-format2">
+        <xsd:sequence>
+            <xsd:element name="adresse1" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder adresseinformasjon 1.
+                        For gateadresse vil dette være: [Gatenavn].
+                        For stedsadresse vil dette være : [Stedsnavn].
+                        For postboksadresse vil dette være : Postboks  [postboksnummer] [sted].
+                        For postboksadresse vil dette være : Serviceboks  [boksnummer].
+                        For utenlandsadresse vil en benytte den kolonnen for å legge inn første adresselinje.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresse2" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder adresseinformasjon 2.
+                        For gateadresse vil dette være: [Husnr].
+                        Eventuell adresselinje 2 for utenlandsadresser.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresse3" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder adresseinformasjon 3.
+                        For gateadresse vil dette være: [Bokstav].
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="adresse4" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder adresseinformasjon 4.
+                        For gateadresse vil dette være: [Inngang]
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="postnummer" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder postnummer.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="poststed" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder poststed.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="land" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+                    	Navn på TLE-felt som inneholder land.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="jobb-sammendrag">
+        <xsd:sequence>
+            <xsd:element name="ref-avsender-id" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Id for den Digipost-kontoen som er definiert som avsender for denne jobben.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ref-behandler-id" type="xsd:string" minOccurs="0" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Id for den Digipost-kontoen som sendt inn (behandlet) jobb denne responsen gjelder.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ref-jobb-id" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Id på jobben som dette er resultat for.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="start-tid" type="xsd:dateTime" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Når jobben ble mottatt.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="slutt-tid" type="xsd:dateTime" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Når prosessering av jobben ble avsluttet.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="jobb-status">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUKSESS">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="SUKSESS"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="FEILET">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="FEILET"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="feilinformasjon">
+        <xsd:sequence>
+            <xsd:element name="feilkode" type="dp:feilkode" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="melding" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+						Nærmere informasjon om hva som har gått galt.
+					</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="feilkode">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="VALIDERING_FEILET">
+                <xsd:annotation>
+                    <xsd:documentation>Validering av XML-en feilet.</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="VALIDERING_FEILET"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ENGINE_FEIL">
+                <xsd:annotation>
+                    <xsd:documentation>En feil oppstod under prosesseringen av jobben.</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="ENGINE_FEIL"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="GENERELL_FEIL">
+                <xsd:annotation>
+                    <xsd:documentation>En uspesifisert feil oppstod.</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="GENERELL_FEIL"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="mottaker-sammendrag">
+        <xsd:sequence>
+            <xsd:element name="total" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Totalt antall mottakere.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="digipost" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Totalt antall Digipost brukere identifisert (og som fikk tilsendt brev).
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="digipost-vask" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Antall Digipost brukere som ble identifisert gjenom adressevask.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identifisert" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Totalt antall identifiserte brukere som ikke var Digipost-brukere.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identifisert-vask" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Totalt antall identifiserte brukere som ble identifisert gjennom adressevask og som ikke er Digipost-brukere.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="uidentifisert" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Totalt antall ukjente brukere.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="uidentifisert-flere-treff" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Antall usikre treff (tilfeller hvor det fantes mer enn ett treff i Digiposts register for gitt mottakerinformasjon).
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ugyldig" type="xsd:int" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>
+		            	Totalt antall mottakere hvor noe av den oppgitte informasjonen var ugyldig.
+		            </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="mottaker-resultat-liste">
+        <xsd:annotation>
+            <xsd:documentation>
+            	Liste av mottakerresultater.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+        	<xsd:element name="digipost-resultat" type="dp:digipost-resultat-liste" minOccurs="1" maxOccurs="1"/>
+	        <xsd:element name="identifisert-resultat" type="dp:identifisert-resultat-liste" minOccurs="1" maxOccurs="1"/>
+    	    <xsd:element name="uidentifisert-resultat" type="dp:uidentifisert-resultat-liste" minOccurs="1" maxOccurs="1"/>
+        	<xsd:element name="ugyldig-resultat" type="dp:ugyldig-resultat-liste" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="digipost-resultat-liste">
+  		<xsd:annotation>
+   			<xsd:documentation>
+   				Liste over mottakere som er Digipost-brukere.
+   			</xsd:documentation>
+    	</xsd:annotation>
+    	<xsd:sequence>
+            <xsd:element name="resultat" type="dp:digipost-mottaker-resultat" minOccurs="0" maxOccurs="unbounded">
+            	<xsd:annotation>
+	                <xsd:appinfo>
+		            	<jaxb:property name="resultater"/>
+		            </xsd:appinfo>
+            	</xsd:annotation>
+		    </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="identifisert-resultat-liste">
+   		<xsd:annotation>
+   			<xsd:documentation>
+   				Liste over mottakere som ble identifisert, men som ikke er Digipost-brukere.
+   			</xsd:documentation>
+    	</xsd:annotation>
+      	<xsd:sequence>
+            <xsd:element name="resultat" type="dp:identifisert-mottaker-resultat" minOccurs="0" maxOccurs="unbounded">
+               	<xsd:annotation>
+	                <xsd:appinfo>
+		            	<jaxb:property name="resultater"/>
+		            </xsd:appinfo>
+            	</xsd:annotation>
+		    </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="uidentifisert-resultat-liste">
+   		<xsd:annotation>
+   			<xsd:documentation>
+   				Liste over mottakere som ikke ble identifisert.
+   			</xsd:documentation>
+   		</xsd:annotation>
+      	<xsd:sequence>
+            <xsd:element name="resultat" type="dp:uidentifisert-mottaker-resultat" minOccurs="0" maxOccurs="unbounded">
+            	<xsd:annotation>
+	                <xsd:appinfo>
+		            	<jaxb:property name="resultater"/>
+		            </xsd:appinfo>
+            	</xsd:annotation>
+		    </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ugyldig-resultat-liste">
+   		<xsd:annotation>
+   			<xsd:documentation>
+   				Liste over mottakere med ugyldig informasjon.
+   			</xsd:documentation>
+    	</xsd:annotation>
+      	<xsd:sequence>
+            <xsd:element name="resultat" type="dp:ugyldig-mottaker-resultat" minOccurs="0" maxOccurs="unbounded">
+            	<xsd:annotation>
+	                <xsd:appinfo>
+		            	<jaxb:property name="resultater"/>
+		            </xsd:appinfo>
+            	</xsd:annotation>
+			</xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+   
+    <xsd:complexType name="mottaker-resultat">
+        <xsd:sequence>
+            <xsd:element name="kunde-id" type="xsd:string" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Avsenders unike id for mottaker</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="vasket" type="xsd:boolean" minOccurs="1" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="digipost-mottaker-resultat">
+        <xsd:complexContent>
+            <xsd:extension base="dp:mottaker-resultat">
+                <xsd:sequence>
+                    <xsd:element name="digipostadresse" type="xsd:string" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>Mottakerens Digipost-adresse. Kan brukes for å identifisere mottakere i fremtidige jobber.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="identifisert-mottaker-resultat">
+        <xsd:complexContent>
+            <xsd:extension base="dp:mottaker-resultat">
+                <xsd:sequence>
+                    <xsd:element name="person-alias" type="xsd:string" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation>
+                            <xsd:documentation>Mottakerens alias hos Digipost. Brukes for personer som blir identifisert, men som ikke er Digipost-brukere.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="uidentifisert-mottaker-resultat">
+        <xsd:complexContent>
+            <xsd:extension base="dp:mottaker-resultat">
+                <xsd:sequence>
+                    <xsd:element name="kode" maxOccurs="1" minOccurs="0" type="dp:uidentifisert-kode">
+             </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:simpleType name="uidentifisert-kode">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="FLERE_TREFF">
+                <xsd:annotation>
+                    <xsd:documentation>Mottakeren kunne ikke identifiseres entydig</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="FLERE_TREFF"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="MANGELFULL_ADRESSE">
+                <xsd:annotation>
+                    <xsd:documentation>Mottakeren kunne ikke identifiseres på grunn av mangelfull adresse.</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="MANGELFULL_ADRESSE"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="ugyldig-mottaker-resultat">
+        <xsd:complexContent>
+            <xsd:extension base="dp:mottaker-resultat">
+                <xsd:sequence>
+                    <xsd:element name="kode" maxOccurs="1" minOccurs="1" type="dp:ugyldig-kode" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:simpleType name="ugyldig-kode">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jaxb:typesafeEnumClass/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="UGYLDIG_KUNDEID">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig kunde-id</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="UGYLDIG_KUNDEID"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="UGYLDIG_FOEDSELSNUMMER">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig fødselsnummer</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="UGYLDIG_FOEDSELSNUMMER"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="UGYLDIG_FOEDSELSDATO">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig fødselsdato</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="UGYLDIG_FOEDSELSDATO"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="UGYLDIG_DIGIPOSTADRESSE">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig Digipost-adresse</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="UGYLDIG_DIGIPOSTADRESSE"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="UGYLDIG_NAVN_ADRESSE">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig navn eller adresse</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="UGYLDIG_NAVN_ADRESSE"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="UGYLDIG_POSTNUMMER">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig postnummer</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="UGYLDIG_POSTNUMMER"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="USPESIFISERT">
+                <xsd:annotation>
+                    <xsd:documentation>Ugyldig postnummer</xsd:documentation>
+                    <xsd:appinfo>
+                        <jaxb:typesafeEnumMember name="USPESIFISERT"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

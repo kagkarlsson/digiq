@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DigiPost - grensesnitt for avsendere
+Resultat for en masseutsendelse
+-->
+<xsd:schema
+	version="1.0"
+	targetNamespace="http://www.digipost.no/xsd/avsender1_6"
+	xmlns:dp="http://www.digipost.no/xsd/avsender1_6"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0"
+	elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="digipost-common.xsd" />
+
+	<xsd:element name="masseutsendelse-resultat">
+        <xsd:annotation>
+            <xsd:documentation>
+                Respons for en masseutsendelse i Digipost.
+            </xsd:documentation>
+        </xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="status" type="dp:jobb-status" minOccurs="1" maxOccurs="1"/>
+				<xsd:element name="jobb-sammendrag" type="dp:jobb-sammendrag" minOccurs="1" maxOccurs="1"/>
+				<xsd:choice>
+					<xsd:sequence>
+						<xsd:element name="mottaker-sammendrag" type="dp:mottaker-sammendrag" minOccurs="1" maxOccurs="1"/>
+					    <xsd:element name="mottaker-resultater" type="dp:mottaker-resultat-liste" minOccurs="1" maxOccurs="1"/>
+			    	</xsd:sequence>
+			    	<xsd:element name="feilinformasjon" type="dp:feilinformasjon" minOccurs="1" maxOccurs="1"/>
+				</xsd:choice>
+ 			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

@@ -23,14 +23,15 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 	@Resource
 	private MessageDao messageDao;
 	private MockEndpoint sftpMock;
-	private SendToIdentificationRoute routes;
+	private SendToIdentificationRoute route;
 
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+		
 		sftpMock = getMockEndpoint("mock:sftp");
-		routes = new SendToIdentificationRoute(getMessagesToIdentification, createDigipostZip);
-		routes.interceptSendToEndpoint("sftp*").to(sftpMock).skipSendToOriginalEndpoint();	
+		route = new SendToIdentificationRoute(getMessagesToIdentification, createDigipostZip);
+		route.interceptSendToEndpoint("direct:sftpToIdentification").to(sftpMock).skipSendToOriginalEndpoint();
 	}
 	
 	@Test
@@ -40,7 +41,7 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 		messageDao.create(MessageBuilder.newMessage().build());
 		assertEquals(1, messageDao.listWithStatus(Status.IDENTIFY).size());
 		
-		startCamel(routes);
+		startCamel(route);
 		
 		notify.matches(5, TimeUnit.SECONDS);
 		
@@ -53,7 +54,7 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 		assertEquals(0, messageDao.listWithStatus(Status.IDENTIFY).size());
 		
-		startCamel(routes);
+		startCamel(route);
 		
 		notify.matches(5, TimeUnit.SECONDS);
 		assertEquals(0, messageDao.listWithStatus(Status.IDENTIFY).size());

@@ -50,7 +50,6 @@ public class DigiqCamelTestBase extends CamelTestSupport implements
 	@Override
 	protected CamelContext createCamelContext() throws Exception {
 		CamelContext context = new SpringCamelContext(applicationContext);
-
 		context.setLazyLoadTypeConverters(isLazyLoadingTypeConverter());
 
 		return context;
@@ -66,6 +65,7 @@ public class DigiqCamelTestBase extends CamelTestSupport implements
 			log.debug("Using created route builder: " + builder);
 			context.addRoutes(builder);
 		}
+
 		log.info("Starting context with {} routes.",context.getRoutes().size());
 		context.start();
 	}

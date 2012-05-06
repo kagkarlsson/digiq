@@ -14,12 +14,12 @@ public class PollForIdentificationReceipt extends RouteBuilder {
     @Autowired
     public PollForIdentificationReceipt(ParseIdentificationReceipt parseIdentificationReceipt) {
         this.parseIdentificationReceipt = parseIdentificationReceipt;
-        
+
     }
-    
+
     @Override
     public void configure() throws Exception {
-        from("sftp://bekk@camelon.os.ergo.no:/tmp/kvittering?password=Gh78)#b34K&delete=true&readLock=changed")
+        from("direct:sftpPollForReceipt")
         .bean(parseIdentificationReceipt);
     }
 

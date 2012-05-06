@@ -7,6 +7,7 @@ import no.bekk.digiq.Message;
 import no.digipost.xsd.avsender1_6.XmlAdresse;
 import no.digipost.xsd.avsender1_6.XmlAdresseFormat1;
 import no.digipost.xsd.avsender1_6.XmlBrev;
+import no.digipost.xsd.avsender1_6.XmlBrevInnstillinger;
 import no.digipost.xsd.avsender1_6.XmlDokumentListe;
 import no.digipost.xsd.avsender1_6.XmlForsendelse;
 import no.digipost.xsd.avsender1_6.XmlForsendelseListe;
@@ -37,6 +38,11 @@ public class MasseutsendelseBuilder {
         this.jobbNavn = jobbNavn;
         return this;
     }
+    
+    public MasseutsendelseBuilder withAvsender(long senderId) {
+        this.avsenderId = senderId;
+        return this;
+    }
 
     public MasseutsendelseBuilder withRecipients(List<Message> recipients) {
         for (Message message : recipients) {
@@ -58,6 +64,7 @@ public class MasseutsendelseBuilder {
         jobbInnstillinger.setJobbId(jobbId);
         jobbInnstillinger.setJobbNavn(jobbNavn);
         jobbInnstillinger.setKlientinformasjon("Digiq_v1.0");
+        jobbInnstillinger.setAutoGodkjennJobb(true);
         masseutsendelse.setJobbInnstillinger(jobbInnstillinger);
 
         XmlStandardDistribusjon dist = new XmlStandardDistribusjon();
@@ -70,6 +77,10 @@ public class MasseutsendelseBuilder {
             String id = String.valueOf(m.id);
             b.setId("id-" + id);
             b.setFil(id + ".pdf");
+            XmlBrevInnstillinger innstillinger = new XmlBrevInnstillinger();
+            innstillinger.setEmne(m.subject);
+            innstillinger.setSmsVarsling(false);
+            b.setInnstillinger(innstillinger);
             dokumenter.getDokumenter().add(b);
 
             XmlForsendelse forsendelse = new XmlForsendelse();
@@ -87,13 +98,13 @@ public class MasseutsendelseBuilder {
 
     private XmlMottaker newMottaker(Message mottaker) {
         XmlMottaker xmlMottaker = new XmlMottaker();
+        xmlMottaker.setKundeId(String.valueOf(mottaker.id));
         if (mottaker.personalIdentificationNumber != null) {
             xmlMottaker.setFoedselsnummer(mottaker.personalIdentificationNumber);
         } else if (mottaker.digipostAddress != null) {
             xmlMottaker.setDigipostadresse(mottaker.digipostAddress);
         } else {
             XmlNavn navn = new XmlNavn();
-            xmlMottaker.setKundeId(String.valueOf(mottaker.id));
             XmlNavnFormat1 navnFormat1 = new XmlNavnFormat1();
             navnFormat1.setFulltNavnFornavnFoerst(mottaker.name);
             navn.setNavnFormat1(navnFormat1);

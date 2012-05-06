@@ -10,8 +10,9 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.transform.stream.StreamResult;
 
-import no.bekk.digiq.xml.MottakersplittBuilder;
-import no.digipost.xsd.avsender1_6.XmlMottakersplitt;
+import no.bekk.digiq.HubConfiguration;
+import no.bekk.digiq.xml.MasseutsendelseBuilder;
+import no.digipost.xsd.avsender1_6.XmlMasseutsendelse;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
@@ -25,10 +26,12 @@ import org.springframework.stereotype.Component;
 public class CreateDigipostZip {
 
     private final Jaxb2Marshaller marshaller;
+    private final HubConfiguration config;
 
     @Autowired
-    public CreateDigipostZip(Jaxb2Marshaller jaxb2Marshaller) {
+    public CreateDigipostZip(Jaxb2Marshaller jaxb2Marshaller, HubConfiguration config) {
         this.marshaller = jaxb2Marshaller;
+        this.config = config;
     }
 
     @SuppressWarnings("unchecked")
@@ -37,6 +40,7 @@ public class CreateDigipostZip {
         Message in = exchange.getIn();
         List<no.bekk.digiq.Message> toIdentification = (List<no.bekk.digiq.Message>) in.getBody();
         exchange.getOut().setBody(createZip(toIdentification));
+        exchange.getOut().setHeader("CamelFileName", "test1.zip");
     }
 
     public InputStream createZip(List<no.bekk.digiq.Message> recipients) {
@@ -44,8 +48,14 @@ public class CreateDigipostZip {
             ByteArrayOutputStream zipped = new ByteArrayOutputStream();
             ZipOutputStream zipOs = new ZipOutputStream(zipped);
 
-            zipOs.putNextEntry(new ZipEntry("mottakersplitt.xml"));
-            IOUtils.write(createMottakersplitt(recipients), zipOs);
+            zipOs.putNextEntry(new ZipEntry("masseutsendelse.xml"));
+            IOUtils.write(createMasseutsendelse(recipients), zipOs);
+
+            for (no.bekk.digiq.Message message : recipients) {
+                zipOs.putNextEntry(new ZipEntry(message.id + ".pdf"));
+                IOUtils.write(message.content, zipOs);
+            }
+
             zipOs.finish();
             zipOs.close();
 
@@ -56,8 +66,9 @@ public class CreateDigipostZip {
 
     }
 
-    private byte[] createMottakersplitt(List<no.bekk.digiq.Message> recipients) {
-        XmlMottakersplitt xml = MottakersplittBuilder.newMottakersplitt().withRecipients(recipients).build();
+    private byte[] createMasseutsendelse(List<no.bekk.digiq.Message> recipients) {
+        XmlMasseutsendelse xml = MasseutsendelseBuilder.newMasseutsendelse().withAvsender(config.getSenderId()).withRecipients(recipients)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         marshaller.marshal(xml, new StreamResult(baos));

@@ -22,6 +22,5 @@ public class StoreMessageImpl implements StoreMessage {
 	@Transactional
 	public void store(Forsendelse forsendelse) {
 		messageDao.create(Message.fromForsendelse(forsendelse));
-		System.out.println("Store!");
 	}
 }

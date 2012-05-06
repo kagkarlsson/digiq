@@ -23,8 +23,8 @@ public class MessageDao {
 	}
 
 	public void create(Message m) {
-		template.update("insert into message(digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipcode, city, country, content, status)" +
-				" values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.digipostAddress, m.personalIdentificationNumber, m.name, m.addressline1, m.addressline2, m.zipCode, m.city, m.country, m.content, m.status.name());
+		template.update("insert into message(subject, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipcode, city, country, content, status)" +
+				" values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.subject, m.digipostAddress, m.personalIdentificationNumber, m.name, m.addressline1, m.addressline2, m.zipCode, m.city, m.country, m.content, m.status.name());
 	}
 
 	public List<Message> reserveMessagesToIdentification() {
@@ -54,6 +54,7 @@ public class MessageDao {
 		public Message mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new Message(
 					rs.getLong("id"),
+					rs.getString("subject"),
 					rs.getString("digipostAddress"),
 					rs.getString("personalIdentificationNumber"),
 					rs.getString("name"),

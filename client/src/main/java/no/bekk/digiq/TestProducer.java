@@ -26,7 +26,7 @@ public class TestProducer {
 
 			@Override
 			public Message createMessage(Session session) throws JMSException {
-				return session.createObjectMessage(new Forsendelse(
+				return session.createObjectMessage(new Forsendelse("Emne",
 						"gustav.karlsson#123A", null, "Gustav Karlsson",
 						"Radarveien 21", null, "1152", "Oslo", null,
 						"Pdf innhold".getBytes()));

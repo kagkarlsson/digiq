@@ -6,6 +6,7 @@ public class Forsendelse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public String subject;
 	public String digipostAdresse;
 	public String foedselsnummer;
 	public String navn;
@@ -15,12 +16,12 @@ public class Forsendelse implements Serializable {
 	public String poststed;
 	public String land;
 	public byte[] pdf;
-	
 
-	public Forsendelse(String digipostAdresse, String foedselsnummer,
+	public Forsendelse(String subject, String digipostAdresse, String foedselsnummer,
 			String navn, String adresselinje1, String adresselinj2,
 			String postnummer, String poststed, String land, byte[] pdf) {
-		this.digipostAdresse = digipostAdresse;
+		this.subject = subject;
+        this.digipostAdresse = digipostAdresse;
 		this.foedselsnummer = foedselsnummer;
 		this.navn = navn;
 		this.adresselinje1 = adresselinje1;

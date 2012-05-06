@@ -5,6 +5,7 @@ import no.bekk.digiq.Message.Status;
 public class MessageBuilder {
 
 	private long id = 1;
+	private String subject = "Subject";
 	private String digipostAddress;
 	private String personalIdentificationNumber;
 	private String name = "Fornavn Etternavn";
@@ -23,9 +24,34 @@ public class MessageBuilder {
 	public static MessageBuilder newMessage() {
 		return new MessageBuilder();
 	}
-
+	
 	public Message build() {
-		return new Message(id, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipCode, city, country, content, status);
+		return new Message(id, subject, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipCode, city, country, content, status);
 	}
+
+    public MessageBuilder withId(long id) {
+        this.id = id;
+        return this;
+    }
+    
+    public MessageBuilder withPersonalIdentificationNumber(String fnr) {
+        this.personalIdentificationNumber = fnr;
+        return this;
+    }
+    
+    public MessageBuilder withNoAdress() {
+        name = null;
+        addressline1 = null;
+        addressline2 =null;
+        zipCode = null;
+        city = null;
+        country = null;
+        return this;
+    }
+
+    public MessageBuilder withDigipostadress(String digipostadress) {
+        digipostAddress = digipostadress;
+        return this;
+    }
 
 }

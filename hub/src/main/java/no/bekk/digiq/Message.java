@@ -1,9 +1,9 @@
 package no.bekk.digiq;
 
-import org.apache.commons.lang.StringUtils;
 
 public class Message {
 
+    public String subject;
 	public String digipostAddress;
 	public String personalIdentificationNumber;
 	public String name;
@@ -16,10 +16,11 @@ public class Message {
 	public Status status;
 	public final long id;
 
-	public Message(long id, String digipostAddress, String personalIdentificationNumber,
+	public Message(long id, String subject, String digipostAddress, String personalIdentificationNumber,
 			String name, String addressline1, String addressline2,
 			String zipCode, String city, String country, byte[] content, Status status) {
 		this.id = id;
+        this.subject = subject;
 		this.digipostAddress = digipostAddress;
 		this.personalIdentificationNumber = personalIdentificationNumber;
 		this.name = name;
@@ -33,7 +34,7 @@ public class Message {
 	}
 
 	public static Message fromForsendelse(Forsendelse f) {
-		return new Message(0, f.digipostAdresse, f.foedselsnummer, f.navn,
+		return new Message(0, f.subject, f.digipostAdresse, f.foedselsnummer, f.navn,
 				f.adresselinje1, f.adresselinj2, f.postnummer, f.poststed,
 				f.land, f.pdf, Status.IDENTIFY);
 	}

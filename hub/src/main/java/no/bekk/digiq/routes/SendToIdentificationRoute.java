@@ -25,7 +25,7 @@ public class SendToIdentificationRoute extends RouteBuilder {
 				.bean(getMessagesToIdentification)
 				.policy("jdbcPolicy")
 				.bean(createDigipostZip)
-				.to("sftp://bekk@camelon.os.ergo.no/home/bekk/tmp?password=Gh78)#b34K");
+				.to("direct:sftpToIdentification");
 	}
 
 }

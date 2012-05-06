@@ -1,5 +1,6 @@
 create table message(
 	id identity not null primary key,
+	subject varchar(255),
 	digipostAddress varchar(255),
 	personalIdentificationNumber varchar(11),
 	name varchar(255),

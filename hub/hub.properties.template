@@ -2,5 +2,6 @@ sender.id=[The id of the sender from the Digipost Info-tab]
 sftp.user=prod_[sender.id]
 sftp.host=sftp.digipost.no
 sftp.path=
+#Beware, if there is a public key ([sftp.key.file].pub), the authentication has been known to fail.
 sftp.key.file=[path to the digipost sftp private key]
 sftp.key.password=[passphrase for the digipost sftp key]

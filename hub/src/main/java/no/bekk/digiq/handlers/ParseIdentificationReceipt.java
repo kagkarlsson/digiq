@@ -44,6 +44,7 @@ public class ParseIdentificationReceipt {
         String singleKey = entries.keySet().iterator().next();
         byte[] content = entries.get(singleKey);
 
+        LOG.info("Got receipt content:\n" + new String(content));
         if (FilenameUtils.isExtension(singleKey, "xml")) {
             XmlMasseutsendelseResultat result = (XmlMasseutsendelseResultat) unmarshaller.unmarshal(new BytesSource(content));
             parseReceipt(result);

@@ -22,7 +22,6 @@ public class HubMain {
         }
         
 		ClassPathXmlApplicationContext springContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-		springContext.registerShutdownHook();
 		
 		LOG.info("Validating hub configuration.");
 		springContext.getBean(HubConfiguration.class).validateConfiguration();

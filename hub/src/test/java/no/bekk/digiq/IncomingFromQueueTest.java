@@ -4,6 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -14,12 +15,13 @@ import no.bekk.digiq.handlers.StoreMessageImpl;
 import no.bekk.digiq.routes.IncomingRoute;
 
 import org.apache.camel.builder.NotifyBuilder;
+import org.apache.kahadb.util.ByteArrayInputStream;
 import org.junit.Test;
 
 public class IncomingFromQueueTest extends DigiqCamelTestBase {
 
 	@Resource
-	private TestProducer digiqClient;
+	private DigipostQueue digiqClient;
 	@Resource
 	private MessageDao messageDao;
 	@Resource
@@ -30,7 +32,7 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 
-		digiqClient.test();
+		addMessageToQueue();
 
 		notify.matches(10, TimeUnit.SECONDS);
 
@@ -48,7 +50,8 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 
-		digiqClient.test();
+		addMessageToQueue();
+		
 		notify.matches(
 				5, TimeUnit.SECONDS);
 		
@@ -56,4 +59,8 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 		assertNotNull(consumer.receiveBody("activemq:ActiveMQ.DLQ"));
 		assertNull(consumer.receiveBodyNoWait("activemq:no.bekk.digiq.ny"));
 	}
+
+    private void addMessageToQueue() throws IOException {
+        digiqClient.sendDigipost("Emne", "first.last#1111", new ByteArrayInputStream("dummy".getBytes()));
+    }
 }

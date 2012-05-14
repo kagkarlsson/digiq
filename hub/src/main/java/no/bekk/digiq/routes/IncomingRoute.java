@@ -1,6 +1,6 @@
 package no.bekk.digiq.routes;
 
-import no.bekk.digiq.StoreMessage;
+import no.bekk.digiq.handlers.StoreMessage;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

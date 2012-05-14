@@ -11,7 +11,7 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamResult;
 
-import no.bekk.digiq.activities.ParseIdentificationReceipt;
+import no.bekk.digiq.handlers.ParseIdentificationReceipt;
 import no.bekk.digiq.routes.PollForIdentificationReceipt;
 import no.bekk.digiq.xml.MasseutsendelseResultatBuilder;
 import no.digipost.xsd.avsender1_6.XmlMasseutsendelseResultat;

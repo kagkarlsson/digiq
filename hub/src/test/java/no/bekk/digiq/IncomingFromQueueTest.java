@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 import no.bekk.digiq.dao.MessageDao;
+import no.bekk.digiq.handlers.StoreMessage;
+import no.bekk.digiq.handlers.StoreMessageImpl;
 import no.bekk.digiq.routes.IncomingRoute;
 
 import org.apache.camel.builder.NotifyBuilder;
@@ -23,20 +25,20 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 	@Resource
 	private StoreMessage storeMessage;
 	@Test
-	public void test() throws Exception {
+	public void shouldReceiveMessagesFromQueue() throws Exception {
 		startCamel(new IncomingRoute(storeMessage));
 
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 
 		digiqClient.test();
 
-		notify.matches(3, TimeUnit.SECONDS);
+		notify.matches(10, TimeUnit.SECONDS);
 
 		assertEquals(1, messageDao.count());
 	}
 
 	@Test
-	public void testDatabaseError() throws Exception {
+	public void shouldPutFailingMessageOnDLQ() throws Exception {
 		assertEquals(0, messageDao.count());
 		
 		StoreMessageImpl mockStore = mock(StoreMessageImpl.class);

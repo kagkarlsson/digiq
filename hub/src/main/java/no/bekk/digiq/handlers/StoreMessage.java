@@ -1,4 +1,6 @@
-package no.bekk.digiq;
+package no.bekk.digiq.handlers;
+
+import no.bekk.digiq.Forsendelse;
 
 import org.apache.camel.Handler;
 

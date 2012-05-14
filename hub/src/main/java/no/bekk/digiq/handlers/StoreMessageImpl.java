@@ -1,5 +1,7 @@
-package no.bekk.digiq;
+package no.bekk.digiq.handlers;
 
+import no.bekk.digiq.Forsendelse;
+import no.bekk.digiq.Message;
 import no.bekk.digiq.dao.MessageDao;
 
 import org.apache.camel.Handler;

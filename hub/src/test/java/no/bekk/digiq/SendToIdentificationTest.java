@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 import no.bekk.digiq.Message.Status;
-import no.bekk.digiq.activities.CreateDigipostZip;
-import no.bekk.digiq.activities.GetMessagesToIdentification;
 import no.bekk.digiq.dao.MessageDao;
+import no.bekk.digiq.handlers.CreateDigipostZip;
+import no.bekk.digiq.handlers.GetMessagesToIdentification;
 import no.bekk.digiq.routes.SendToIdentificationRoute;
 
 import org.apache.camel.builder.NotifyBuilder;

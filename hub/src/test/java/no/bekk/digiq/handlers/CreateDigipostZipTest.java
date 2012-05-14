@@ -1,4 +1,4 @@
-package no.bekk.digiq.activities;
+package no.bekk.digiq.handlers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +10,7 @@ import java.util.Map;
 import no.bekk.digiq.HubConfiguration;
 import no.bekk.digiq.MessageBuilder;
 import no.bekk.digiq.XsdHelper;
+import no.bekk.digiq.handlers.CreateDigipostZip;
 import no.bekk.digiq.util.ZipHelper;
 
 import org.junit.Before;

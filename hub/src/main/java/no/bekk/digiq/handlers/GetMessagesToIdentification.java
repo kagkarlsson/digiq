@@ -1,4 +1,4 @@
-package no.bekk.digiq.activities;
+package no.bekk.digiq.handlers;
 
 import java.util.List;
 

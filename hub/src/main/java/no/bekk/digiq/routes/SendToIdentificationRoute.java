@@ -1,7 +1,7 @@
 package no.bekk.digiq.routes;
 
-import no.bekk.digiq.activities.CreateDigipostZip;
-import no.bekk.digiq.activities.GetMessagesToIdentification;
+import no.bekk.digiq.handlers.CreateDigipostZip;
+import no.bekk.digiq.handlers.GetMessagesToIdentification;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

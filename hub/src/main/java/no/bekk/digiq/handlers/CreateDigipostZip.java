@@ -1,4 +1,4 @@
-package no.bekk.digiq.activities;
+package no.bekk.digiq.handlers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

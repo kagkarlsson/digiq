@@ -1,0 +1,6 @@
+sender.id=[The id of the sender from the Digipost Info-tab]
+sftp.user=prod_[sender.id]
+sftp.host=sftp.digipost.no
+sftp.path=
+sftp.key.file=[path to the digipost sftp private key]
+sftp.key.password=[passphrase for the digipost sftp key]

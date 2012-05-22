@@ -7,7 +7,7 @@ import no.bekk.digiq.handlers.CreateDigipostZip;
 import no.bekk.digiq.handlers.GetMessagesToIdentification;
 import no.bekk.digiq.handlers.ParseIdentificationReceipt;
 import no.bekk.digiq.handlers.StoreMessage;
-import no.bekk.digiq.routes.IncomingRoute;
+import no.bekk.digiq.routes.ReadFromQueue;
 import no.bekk.digiq.routes.PollForIdentificationReceipt;
 import no.bekk.digiq.routes.SendToIdentificationRoute;
 import no.bekk.digiq.routes.SftpRoutes;
@@ -36,7 +36,7 @@ public class Routes {
 	
 	public List<RouteBuilder> getRouteBuilders() {
 	    return Lists.newArrayList(
-	            new IncomingRoute(storeMessage), 
+	            new ReadFromQueue(storeMessage), 
 	            new SendToIdentificationRoute(getMessagesToIdentification, createDigipostZip), 
 	            new PollForIdentificationReceipt(parseIdentificationReceipt),
 	            new SftpRoutes());

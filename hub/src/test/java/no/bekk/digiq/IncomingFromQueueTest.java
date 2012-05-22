@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 import no.bekk.digiq.dao.MessageDao;
 import no.bekk.digiq.handlers.StoreMessage;
 import no.bekk.digiq.handlers.StoreMessageImpl;
-import no.bekk.digiq.routes.IncomingRoute;
+import no.bekk.digiq.routes.ReadFromQueue;
 
 import org.apache.camel.builder.NotifyBuilder;
 import org.apache.kahadb.util.ByteArrayInputStream;
@@ -28,7 +28,7 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 	private StoreMessage storeMessage;
 	@Test
 	public void shouldReceiveMessagesFromQueue() throws Exception {
-		startCamel(new IncomingRoute(storeMessage));
+		startCamel(new ReadFromQueue(storeMessage));
 
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 
@@ -46,7 +46,7 @@ public class IncomingFromQueueTest extends DigiqCamelTestBase {
 		StoreMessageImpl mockStore = mock(StoreMessageImpl.class);
 		doThrow(new RuntimeException()).when(mockStore).store(
 				any(Forsendelse.class));
-		startCamel(new IncomingRoute(mockStore));
+		startCamel(new ReadFromQueue(mockStore));
 
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
 

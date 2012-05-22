@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IncomingRoute extends RouteBuilder{
+public class ReadFromQueue extends RouteBuilder{
 
 	private StoreMessage storeMessage;
 
 	@Autowired
-	public IncomingRoute(StoreMessage storeMessage) {
+	public ReadFromQueue(StoreMessage storeMessage) {
 		this.storeMessage = storeMessage;
 	}
 	

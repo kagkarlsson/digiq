@@ -18,10 +18,10 @@ import org.apache.camel.builder.NotifyBuilder;
 import org.apache.kahadb.util.ByteArrayInputStream;
 import org.junit.Test;
 
-public class IncomingFromQueueTest extends DigiqCamelTestBase {
+public class ReadFromQueueTest extends DigiqCamelTestBase {
 
 	@Resource
-	private DigipostQueue digiqClient;
+	private DigiqClient digiqClient;
 	@Resource
 	private MessageDao messageDao;
 	@Resource

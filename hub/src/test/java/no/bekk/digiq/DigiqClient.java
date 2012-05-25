@@ -16,12 +16,12 @@ import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DigipostQueue {
+public class DigiqClient {
 
 	private JmsTemplate jmsTemplate;
 
 	@Autowired
-	public DigipostQueue(JmsTemplate jmsTemplate) {
+	public DigiqClient(JmsTemplate jmsTemplate) {
 		this.jmsTemplate = jmsTemplate;
 	}
 

@@ -1,8 +1,7 @@
-package no.bekk.digiq.adapters;
+package no.bekk.digiq.adapters.smtp;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,14 +11,14 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.mail.BodyPart;
-import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.camel.ProducerTemplate;
-import org.apache.commons.io.FileUtils;
+import no.bekk.digiq.Forsendelse;
+import no.bekk.digiq.adapters.IncomingMessageListener;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
@@ -28,18 +27,18 @@ import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.RejectException;
 
-public class DelegateIncomingSmtpMessageToCamel implements MessageHandler{
+public class DigipostMailHandler implements MessageHandler{
     
     public static final Pattern RECIPIENT_PATTERN = Pattern.compile("^[a-z.]+#[0-9A-Z]{4}$");
-    private static final Logger LOG = LoggerFactory.getLogger(DelegateIncomingSmtpMessageToCamel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DigipostMailHandler.class);
     
     private List<String> recipients = new ArrayList<String>();
     private final MessageContext ctx;
-    private final ProducerTemplate producerTemplate;
+    private final IncomingMessageListener listener;
     
-    public DelegateIncomingSmtpMessageToCamel(MessageContext ctx, ProducerTemplate producerTemplate) {
+    public DigipostMailHandler(MessageContext ctx, IncomingMessageListener listener) {
         this.ctx = ctx;
-        this.producerTemplate = producerTemplate;
+        this.listener = listener;
     }
 
     public void from(String from) throws RejectException {
@@ -77,12 +76,7 @@ public class DelegateIncomingSmtpMessageToCamel implements MessageHandler{
                             LOG.debug("Fant pdf attachment.");
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             IOUtils.copy(part.getInputStream(), baos);
-                            client.sendMessage(
-                                    new Message(String.valueOf(System.currentTimeMillis()), message.getSubject(),
-                                            new DigipostAddress(
-                                                    recipient),
-                                            false),
-                                    new ByteArrayInputStream(baos.toByteArray()));
+                            listener.received(new Forsendelse("subject", recipient, null, null, null, null, null, null, null, baos.toByteArray()));
                         }
                     }
 

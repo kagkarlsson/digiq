@@ -14,26 +14,6 @@
     ">
 
 
-	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL" value="tcp://localhost:61616" />
-	</bean>
-	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent"
-		p:brokerURL="vm://localhost?create=false&amp;waitForStart=10000">
-		<property name="transacted" value="true" />
-		<property name="transactionManager" ref="jmsTxManager" />
-	</bean>
-	<amq:broker persistent="false" 
-           deleteAllMessagesOnStartup="true" 
-           useShutdownHook="true">
-		<amq:transportConnectors>
-			<amq:transportConnector name="openwire"
-				uri="tcp://localhost:61616" />
-			<amq:transportConnector name="stomp"
-				uri="stomp://localhost:61613" />
-		</amq:transportConnectors>
-	</amq:broker>
-
-
 	<jdbc:embedded-database id="dataSource" type="HSQL">
 		<jdbc:script location="classpath:schema.sql" />
 	</jdbc:embedded-database>
@@ -47,16 +27,6 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
-
-	<bean id="jmsTxManager"
-		class="org.springframework.jms.connection.JmsTransactionManager">
-		<property name="connectionFactory" ref="jmsConnectionFactory" />
-	</bean>
-
-
-	<bean id="jmsPolicy" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
-		<property name="transactionManager" ref="jmsTxManager" />
-	</bean>
 
 	<bean id="jdbcPolicy" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
 		<property name="transactionManager" ref="transactionManager" />

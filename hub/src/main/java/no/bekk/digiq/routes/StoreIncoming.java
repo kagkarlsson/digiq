@@ -7,20 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReadFromQueue extends RouteBuilder{
+public class StoreIncoming extends RouteBuilder{
 
 	private StoreMessage storeMessage;
 
 	@Autowired
-	public ReadFromQueue(StoreMessage storeMessage) {
+	public StoreIncoming(StoreMessage storeMessage) {
 		this.storeMessage = storeMessage;
 	}
 	
 	@Override
 	public void configure() throws Exception {
-		from("activemq:no.bekk.digiq.ny")
-		.id("fromDigiqNy")
-		.policy("jmsPolicy")
+		from("direct:incoming")
 		.bean(storeMessage);
 	}
 

@@ -3,9 +3,8 @@ package no.bekk.digiq;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.bekk.digipost.mailadapter.MyMessageHandlerFactory;
 import no.bekk.digiq.adapters.CamelAdapter;
-import no.bekk.digiq.adapters.SmtpAdapter;
+import no.bekk.digiq.adapters.smtp.SmtpAdapter;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.subethamail.smtp.server.SMTPServer;
 
 public class HubMain {
 
@@ -37,13 +35,14 @@ public class HubMain {
 		
 		final CamelContext context = new DefaultCamelContext(new ApplicationContextRegistry(springContext));
 
-		for (RouteBuilder route : springContext.getBean(Routes.class).getRouteBuilders()) {
+
+		for (RouteBuilder route : springContext.getBean(MainRoutes.class).getRouteBuilders()) {
 		    context.addRoutes(route);
         }
-		
+
 		List<CamelAdapter> adapters = new ArrayList<CamelAdapter>();
 		adapters.add(new SmtpAdapter(context));
-		 
+		
 		Runtime.getRuntime().addShutdownHook(new GracefulShutdown(springContext, context, adapters));
 		
 		springContext.start();

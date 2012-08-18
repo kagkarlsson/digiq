@@ -2,14 +2,15 @@ package no.bekk.digiq.xml;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import no.digipost.xsd.avsender1_6.XmlMasseutsendelseResultat;
 
-import org.apache.kahadb.util.ByteArrayInputStream;
-import org.apache.kahadb.util.ByteArrayOutputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;

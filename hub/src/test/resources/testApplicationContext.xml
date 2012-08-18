@@ -20,11 +20,4 @@
 	<import resource="beans.xml" />
 	<import resource="xsd-beans.xml" />
 
-	<bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL" value="tcp://localhost:61616" />
-	</bean>
-	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<constructor-arg ref="jmsFactory" />
-	</bean>
-
 </beans>

@@ -14,7 +14,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,8 +26,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 public class DigiqCamelTestBase extends CamelTestSupport implements
 		ApplicationContextAware {
 
-	@Resource
-	protected JmsTemplate jmsTemplate;
 	@Resource
 	protected JdbcTemplate jdbcTemplate;
 	private ApplicationContext applicationContext;
@@ -53,6 +50,9 @@ public class DigiqCamelTestBase extends CamelTestSupport implements
 		return context;
 	}
 
+	protected void startCamel() throws Exception {
+	    startCamel(new RouteBuilder[] { });
+	}
 	protected void startCamel(RouteBuilder routeBuilder) throws Exception {
 		startCamel(new RouteBuilder[] { routeBuilder });
 	}

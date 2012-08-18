@@ -2,9 +2,9 @@ package no.bekk.digiq.adapters.smtp;
 
 
 
-import java.util.List;
-
 import no.bekk.digiq.Forsendelse;
+import no.bekk.digiq.HubConfiguration;
+import no.bekk.digiq.MainRoutes;
 import no.bekk.digiq.adapters.CamelAdapter;
 import no.bekk.digiq.adapters.IncomingMessageListener;
 
@@ -12,8 +12,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.subethamail.smtp.AuthenticationHandler;
-import org.subethamail.smtp.AuthenticationHandlerFactory;
 import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.MessageHandlerFactory;
@@ -21,12 +19,12 @@ import org.subethamail.smtp.server.SMTPServer;
 
 public class SmtpAdapter implements CamelAdapter, MessageHandlerFactory {
     static final Logger LOG = LoggerFactory.getLogger(DigipostMailHandler.class);
-    private final CamelContext context;
     private SMTPServer smtpServer;
     private ProducerTemplate producerTemplate;
+    private final HubConfiguration config;
 
-    public SmtpAdapter(CamelContext context) {
-        this.context = context;
+    public SmtpAdapter(CamelContext context, HubConfiguration config) {
+        this.config = config;
         producerTemplate = context.createProducerTemplate();
     }
 
@@ -40,7 +38,7 @@ public class SmtpAdapter implements CamelAdapter, MessageHandlerFactory {
     @Override
     public void start() {
         smtpServer = new SMTPServer(this);
-        smtpServer.setPort(25000);
+        smtpServer.setPort(config.getSmtpPort());
         smtpServer.start();
     }
 
@@ -50,8 +48,7 @@ public class SmtpAdapter implements CamelAdapter, MessageHandlerFactory {
             
             @Override
             public void received(Forsendelse forsendelse) {
-                producerTemplate.sendBody("direct:incoming",forsendelse);
-                
+                producerTemplate.sendBody(MainRoutes.INCOMING,forsendelse);
             }
         });
     }

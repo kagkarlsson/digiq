@@ -30,7 +30,8 @@ public class HubMain {
 		ClassPathXmlApplicationContext springContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 		
 		LOG.info("Validating hub configuration.");
-		springContext.getBean(HubConfiguration.class).validateConfiguration();
+		HubConfiguration config = springContext.getBean(HubConfiguration.class);
+        config.validateConfiguration();
 		
 		
 		final CamelContext context = new DefaultCamelContext(new ApplicationContextRegistry(springContext));
@@ -41,7 +42,7 @@ public class HubMain {
         }
 
 		List<CamelAdapter> adapters = new ArrayList<CamelAdapter>();
-		adapters.add(new SmtpAdapter(context));
+		adapters.add(new SmtpAdapter(context, config));
 		
 		Runtime.getRuntime().addShutdownHook(new GracefulShutdown(springContext, context, adapters));
 		

@@ -23,6 +23,7 @@
 		<sftp.path></sftp.path>
 		<sftp.key.file>private_key_qa</sftp.key.file>
 		<sftp.key.password>Qwer1234</sftp.key.password>
+		<smtp.port>25000</smtp.port>
 	</properties>
 
 	<dependencies>

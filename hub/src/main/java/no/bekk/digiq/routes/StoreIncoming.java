@@ -1,5 +1,6 @@
 package no.bekk.digiq.routes;
 
+import no.bekk.digiq.MainRoutes;
 import no.bekk.digiq.handlers.StoreMessage;
 
 import org.apache.camel.builder.RouteBuilder;
@@ -18,7 +19,7 @@ public class StoreIncoming extends RouteBuilder{
 	
 	@Override
 	public void configure() throws Exception {
-		from("direct:incoming")
+		from(MainRoutes.INCOMING)
 		.bean(storeMessage);
 	}
 

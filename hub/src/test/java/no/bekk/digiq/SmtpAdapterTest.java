@@ -3,7 +3,6 @@ package no.bekk.digiq;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.mail.Message.RecipientType;
 import javax.mail.Multipart;
 import javax.mail.Session;
@@ -27,6 +26,7 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
 
     private static final String DIGIPOSTADRESS = "test.testsson#0000";
     private SmtpAdapter smtpAdapter;
+    private HubConfiguration config;
 
     @Before
     public void setUp() throws Exception {
@@ -35,10 +35,12 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
         startCamel(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("direct:incoming").to("mock:incoming");
+                from(MainRoutes.INCOMING).to("mock:incoming");
             }
         });
-        smtpAdapter = new SmtpAdapter(context);
+        
+        config = new HubConfiguration(null, null, "25000");
+        smtpAdapter = new SmtpAdapter(context, config);
         smtpAdapter.start();
     }
 
@@ -49,7 +51,7 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
 
     @Test
     public void test() throws Exception {
-        sendMail("localhost", 25000);
+        sendMail("localhost", config.getSmtpPort());
         MockEndpoint incoming = getMockEndpoint("mock:incoming");
         Exchange received = incoming.assertExchangeReceived(0);
         Forsendelse body = received.getIn().getBody(Forsendelse.class);

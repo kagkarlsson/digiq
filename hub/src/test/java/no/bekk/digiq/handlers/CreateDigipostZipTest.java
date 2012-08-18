@@ -27,7 +27,7 @@ public class CreateDigipostZipTest {
     @Before
     public void setUp() throws Exception {
         marshaller = XsdHelper.createValidatingJaxbMarshaller();
-        activity = new CreateDigipostZip(marshaller, new HubConfiguration("1", null));
+        activity = new CreateDigipostZip(marshaller, new HubConfiguration("1", null, null));
     }
 
     @Test

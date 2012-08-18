@@ -11,30 +11,42 @@ import org.springframework.stereotype.Component;
 @Component
 public class HubConfiguration {
 
+    private static final String SMTP_PORT_KEY = "smtp.port";
     private static final String SFTP_KEY_FILE_KEY = "sftp.key.file";
     private static final String SENDER_ID_KEY = "sender.id";
     @Value("${" + SENDER_ID_KEY + "}")
     private String senderId;
     @Value("${" + SFTP_KEY_FILE_KEY + "}")
     private String sftpKeyPath;
+    @Value("${" + SMTP_PORT_KEY + "}")
+    private String smtpPort;
 
     private HubConfiguration() {
     }
     
-    public HubConfiguration(String senderId, String stpKeyPath) {
+    public HubConfiguration(String senderId, String stpKeyPath, String smtpPort) {
         this();
         this.senderId = senderId;
         sftpKeyPath = stpKeyPath;
+        this.smtpPort = smtpPort;
     }
     
     public long getSenderId() {
         return Long.parseLong(senderId);
     }
 
+    public int getSmtpPort() {
+        return Integer.parseInt(smtpPort);
+    }
+
     public void validateConfiguration() {
         List<String> errors = new ArrayList<String>();
-        if (senderId == null || !senderId.matches("^\\d+$")) {
+        if (senderId == null || !numerical(senderId)) {
             errors.add(SENDER_ID_KEY + " must be numeric: " + senderId);
+        }
+        
+        if (smtpPort == null || !numerical(smtpPort)) {
+            errors.add(SMTP_PORT_KEY + " must be numeric: " + smtpPort);
         }
         
         File sftpKeyFile = new File(sftpKeyPath);
@@ -45,6 +57,10 @@ public class HubConfiguration {
         if (!errors.isEmpty()) {
             throwConfigurationError(StringUtils.join(errors, ", "));
         }
+    }
+
+    private boolean numerical(String string) {
+        return string.matches("^\\d+$");
     }
 
     private void throwConfigurationError(String errorMessage) {

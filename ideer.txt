@@ -1,0 +1,25 @@
+
+
+Bort med AciveMQ
+
+Adapters som skickar vidare till en standard-route
+- Fil-adapter
+- Mail-adapter
+- RMI-adapter
+
+Enkelt admin-gränssnitt
+- listar innkomna försändelser
+	- kanal
+	- navn & adresse ...
+- korrigera vid fel?
+
+Daglig batch
+
+Lagring av misslyckade försändelser
+- Mappe med all data + pdfer?
+- Ryddejobb? 
+
+Fildatabase i prod-version
+- Lazy load av content? (streaming fra database)
+
+

@@ -12,12 +12,18 @@
 
 	<context:component-scan base-package="no.bekk.digiq" />
 	<context:property-placeholder location="classpath:hub-test.properties" />
-	
-	<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+
+	<bean id="properties"
+		class="org.apache.camel.component.properties.PropertiesComponent">
 		<property name="location" value="classpath:hub-test.properties" />
 	</bean>
-	
-	<import resource="beans.xml" />
+
+	<import resource="database-beans.xml" />
+	<import resource="camel-beans.xml" />
 	<import resource="xsd-beans.xml" />
+
+	<bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase"
+		p:dataSource-ref="dataSource" p:changeLog="classpath:changelogs/database.xml" />
+
 
 </beans>

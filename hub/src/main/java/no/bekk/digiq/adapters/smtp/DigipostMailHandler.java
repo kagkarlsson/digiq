@@ -42,24 +42,21 @@ public class DigipostMailHandler implements MessageHandler{
     }
 
     public void from(String from) throws RejectException {
-        LOG.debug("FROM:" + from);
+        LOG.debug("Incoming mail from:" + from);
     }
 
     public void recipient(String recipient) throws RejectException {
-        LOG.debug("RECIPIENT:" + recipient);
+        LOG.debug("Incoming mail recipient:" + recipient);
         recipients.add(recipient);
     }
 
     public void data(InputStream data) throws IOException {
         byte[] dataBytes = IOUtils.toByteArray(data);
 
-        LOG.debug("MAIL DATA");
-        LOG.debug("= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
+        LOG.debug("Incoming mail data:");
         LOG.debug(new String(dataBytes));
-        LOG.debug("= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =");
 
         try {
-            
             MimeMessage message = new MimeMessage(
                     Session.getInstance(new Properties()), new ByteArrayInputStream(dataBytes));
             MimeMultipart multipart = (MimeMultipart) message.getContent();

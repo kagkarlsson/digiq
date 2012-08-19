@@ -10,4 +10,7 @@
 	</root>
 	
 	<logger name="org.apache.camel.component.file.remote" level="WARN" />
+	<logger name="com.mchange.v2.c3p0.SQLWarnings" level="WARN" />
+	<logger name="net.sf.jmimemagic.MagicParser" level="WARN" />
+	
 </configuration>

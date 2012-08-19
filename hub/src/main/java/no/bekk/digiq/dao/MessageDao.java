@@ -18,8 +18,8 @@ public class MessageDao {
 	private final JdbcTemplate template;
 	
 	@Autowired
-	public MessageDao(JdbcTemplate template) {
-		this.template = template;
+	public MessageDao(JdbcTemplate jdbcTemplate) {
+		this.template = jdbcTemplate;
 	}
 
 	public void create(Message m) {

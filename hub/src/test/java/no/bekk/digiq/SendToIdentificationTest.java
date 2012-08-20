@@ -3,6 +3,8 @@ package no.bekk.digiq;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import no.bekk.digiq.Message.Status;
 import no.bekk.digiq.dao.MessageDao;
@@ -24,6 +26,8 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 	private MessageDao messageDao;
 	private MockEndpoint sftpMock;
 	private SendToIdentificationRoute route;
+	@PersistenceContext
+	private EntityManager em;
 
 	@Override
 	public void setUp() throws Exception {

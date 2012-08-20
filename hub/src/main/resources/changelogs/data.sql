@@ -1,1 +1,0 @@
-insert into test values(1, 'Hello World from database :D');

@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-    <changeSet author="frode" id="CREATE TABLE TEST">
-        <createTable tableName="TEST">
-            <column type="NUMBER(19,0)" name="ID">
-                <constraints primaryKeyName="TEST_PK" primaryKey="true" nullable="false"/>
-            </column>
-            <column type="VARCHAR(240)" name="GREETING"/>
-        </createTable>
-    </changeSet>
-    
-    <changeSet id="insert data" author="frode">
-      <sqlFile path="schema.sql"/>
-      <sqlFile path="changelogs/data.sql"/>
-    </changeSet>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet author="gustav karlsson" id="CREATE TABLE MESSAGE">
+		<createTable tableName="MESSAGE">
+			<column type="NUMBER(19,0)" name="ID">
+				<constraints primaryKeyName="MESSAGE_PK" primaryKey="true"
+					nullable="false" />
+			</column>
+			<column type="VARCHAR(255)" name="SUBJECT" />
+			<column type="VARCHAR(255)" name="DIGIPOSTADDRESS" />
+			<column type="VARCHAR(11)" name="PERSONAL_IDENTIFICATION_NUMBER" />
+			<column type="VARCHAR(255)" name="NAME" />
+			<column type="VARCHAR(80)" name="ADDRESSLINE1" />
+			<column type="VARCHAR(80)" name="ADDRESSLINE2" />
+			<column type="VARCHAR(10)" name="ZIPCODE" />
+			<column type="VARCHAR(50)" name="CITY" />
+			<column type="VARCHAR(50)" name="COUNTRY" />
+			<column type="VARCHAR(20)" name="STATUS" />
+			<column type="BLOB" name="CONTENT" />
+		</createTable>
+		
+		<addAutoIncrement tableName="MESSAGE" columnName="ID" columnDataType="NUMBER(19,0)" />
+	</changeSet>
+
 </databaseChangeLog>

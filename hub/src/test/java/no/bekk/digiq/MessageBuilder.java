@@ -14,7 +14,6 @@ public class MessageBuilder {
 	private String zipCode = "1234";
 	private String city = "Bergen";
 	private String country;
-	private byte[] content = "Hej".getBytes();
 	private Status status = Status.IDENTIFY;
 
 	private MessageBuilder() {
@@ -26,7 +25,7 @@ public class MessageBuilder {
 	}
 	
 	public Message build() {
-		return new Message(id, subject, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipCode, city, country, content, status);
+		return new Message(id, subject, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipCode, city, country, status);
 	}
 
     public MessageBuilder withId(long id) {

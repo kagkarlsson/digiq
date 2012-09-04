@@ -19,8 +19,9 @@ public class MessageDaoImpl implements MessageDao {
 
     @Override
     @Transactional
-    public void create(Message m) {
+    public Message create(Message m) {
         em.persist(m);
+        return m;
     }
 
     @Override

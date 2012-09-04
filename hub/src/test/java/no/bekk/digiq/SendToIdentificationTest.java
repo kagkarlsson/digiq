@@ -3,11 +3,10 @@ package no.bekk.digiq;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import no.bekk.digiq.Message.Status;
 import no.bekk.digiq.dao.MessageDao;
+import no.bekk.digiq.file.FileStore;
 import no.bekk.digiq.handlers.CreateDigipostZip;
 import no.bekk.digiq.handlers.GetMessagesToIdentification;
 import no.bekk.digiq.routes.SendToIdentificationRoute;
@@ -24,10 +23,10 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 	private CreateDigipostZip createDigipostZip;
 	@Resource
 	private MessageDao messageDao;
+	@Resource
+	private FileStore fileStore;
 	private MockEndpoint sftpMock;
 	private SendToIdentificationRoute route;
-	@PersistenceContext
-	private EntityManager em;
 
 	@Override
 	public void setUp() throws Exception {
@@ -42,7 +41,8 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 	public void testMessageToIdentificationShouldBeSentToSftpEndpoint() throws Exception {
 		NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).wereSentTo("mock:sftp").create();
 		
-		messageDao.create(MessageBuilder.newMessage().build());
+		Message message = messageDao.create(MessageBuilder.newMessage().build());
+		fileStore.store(message, "Hej".getBytes());
 		assertEquals(1, messageDao.listWithStatus(Status.IDENTIFY).size());
 		
 		startCamel(route);

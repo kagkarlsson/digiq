@@ -7,7 +7,7 @@ import no.bekk.digiq.Message.Status;
 
 public interface MessageDao {
 
-    public abstract void create(Message m);
+    public abstract Message create(Message m);
 
     public abstract List<Message> reserveMessagesToIdentification();
 

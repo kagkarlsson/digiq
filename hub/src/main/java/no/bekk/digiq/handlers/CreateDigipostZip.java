@@ -11,6 +11,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.transform.stream.StreamResult;
 
 import no.bekk.digiq.HubConfiguration;
+import no.bekk.digiq.file.FileStore;
 import no.bekk.digiq.xml.MasseutsendelseBuilder;
 import no.digipost.xsd.avsender1_6.XmlMasseutsendelse;
 
@@ -27,9 +28,11 @@ public class CreateDigipostZip {
 
     private final Jaxb2Marshaller marshaller;
     private final HubConfiguration config;
+    private final FileStore fileStore;
 
     @Autowired
-    public CreateDigipostZip(Jaxb2Marshaller jaxb2Marshaller, HubConfiguration config) {
+    public CreateDigipostZip(FileStore fileStore, Jaxb2Marshaller jaxb2Marshaller, HubConfiguration config) {
+        this.fileStore = fileStore;
         this.marshaller = jaxb2Marshaller;
         this.config = config;
     }
@@ -53,7 +56,8 @@ public class CreateDigipostZip {
 
             for (no.bekk.digiq.Message message : recipients) {
                 zipOs.putNextEntry(new ZipEntry(message.id + ".pdf"));
-                IOUtils.write(message.content, zipOs);
+                InputStream is = fileStore.read(message);
+                IOUtils.copy(is, zipOs);
             }
 
             zipOs.finish();

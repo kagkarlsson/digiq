@@ -30,8 +30,6 @@ public class Message {
 	public String city;
     @Column(name = "COUNTRY")
 	public String country;
-    @Column(name = "CONTENT")
-	public byte[] content;
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
 	public Status status;
@@ -41,7 +39,7 @@ public class Message {
 
 	public Message(long id, String subject, String digipostAddress, String personalIdentificationNumber,
 			String name, String addressline1, String addressline2,
-			String zipCode, String city, String country, byte[] content, Status status) {
+			String zipCode, String city, String country, Status status) {
 		this.id = id;
         this.subject = subject;
 		this.digipostAddress = digipostAddress;
@@ -52,14 +50,13 @@ public class Message {
 		this.zipCode = zipCode;
 		this.city = city;
 		this.country = country;
-		this.content = content;
 		this.status = status;
 	}
 	
 	public static Message fromForsendelse(Forsendelse f) {
 		return new Message(0, f.subject, f.digipostAdresse, f.foedselsnummer, f.navn,
 				f.adresselinje1, f.adresselinj2, f.postnummer, f.poststed,
-				f.land, f.pdf, Status.IDENTIFY);
+				f.land, Status.IDENTIFY);
 	}
 	
 	public enum Status {

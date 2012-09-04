@@ -14,18 +14,22 @@ public class HubConfiguration {
     private static final String SMTP_PORT_KEY = "smtp.port";
     private static final String SFTP_KEY_FILE_KEY = "sftp.key.file";
     private static final String SENDER_ID_KEY = "sender.id";
+    private static final String STOREPATH_KEY = "store.path";
     @Value("${" + SENDER_ID_KEY + "}")
     private String senderId;
     @Value("${" + SFTP_KEY_FILE_KEY + "}")
     private String sftpKeyPath;
     @Value("${" + SMTP_PORT_KEY + "}")
     private String smtpPort;
+    @Value("${" + STOREPATH_KEY + "}")
+    private String storepath;
 
+    @SuppressWarnings("unused")
     private HubConfiguration() {
     }
     
-    public HubConfiguration(String senderId, String stpKeyPath, String smtpPort) {
-        this();
+    public HubConfiguration(String storepath, String senderId, String stpKeyPath, String smtpPort) {
+        this.storepath = storepath;
         this.senderId = senderId;
         sftpKeyPath = stpKeyPath;
         this.smtpPort = smtpPort;
@@ -54,6 +58,11 @@ public class HubConfiguration {
             errors.add(SFTP_KEY_FILE_KEY + " does not exist: " + sftpKeyPath);
         }
         
+        File storeFile = new File(storepath);
+        if (!storeFile.exists()) {
+            errors.add(STOREPATH_KEY + " does not exist: " + storepath);
+        }
+        
         if (!errors.isEmpty()) {
             throwConfigurationError(StringUtils.join(errors, ", "));
         }
@@ -65,6 +74,10 @@ public class HubConfiguration {
 
     private void throwConfigurationError(String errorMessage) {
         throw new RuntimeException("Hub-configuration is not valid:\n"+errorMessage);
+    }
+
+    public String getStorepath() {
+        return storepath;
     }
 
 }

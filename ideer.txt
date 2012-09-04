@@ -1,7 +1,5 @@
 
 
-Bort med AciveMQ
-
 Adapters som skickar vidare till en standard-route
 - Fil-adapter
 - Mail-adapter

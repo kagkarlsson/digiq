@@ -39,7 +39,7 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
             }
         });
         
-        config = new HubConfiguration(null, null, "25000");
+        config = new HubConfiguration(store.getAbsolutePath(), null, null, "25000");
         smtpAdapter = new SmtpAdapter(context, config);
         smtpAdapter.start();
     }

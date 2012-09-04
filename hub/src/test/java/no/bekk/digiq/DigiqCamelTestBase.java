@@ -1,5 +1,7 @@
 package no.bekk.digiq;
 
+import java.io.File;
+
 import javax.annotation.Resource;
 
 import org.apache.camel.CamelContext;
@@ -9,6 +11,8 @@ import org.apache.camel.test.CamelTestSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -26,13 +30,17 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 public class DigiqCamelTestBase extends CamelTestSupport implements
 		ApplicationContextAware {
 
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 	@Resource
 	protected JdbcTemplate jdbcTemplate;
 	private ApplicationContext applicationContext;
+    protected File store;
 
 	@Before
 	public void setUp() throws Exception {
 		setUseRouteBuilder(false);
+		store = tempFolder.newFolder("store");
 		super.setUp();
 	}
 

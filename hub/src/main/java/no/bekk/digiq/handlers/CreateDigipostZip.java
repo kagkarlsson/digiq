@@ -2,6 +2,9 @@ package no.bekk.digiq.handlers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -48,8 +51,8 @@ public class CreateDigipostZip {
 
     public InputStream createZip(List<no.bekk.digiq.Message> recipients) {
         try {
-            ByteArrayOutputStream zipped = new ByteArrayOutputStream();
-            ZipOutputStream zipOs = new ZipOutputStream(zipped);
+            File tempFile = fileStore.createTempfile();
+            ZipOutputStream zipOs = new ZipOutputStream(new FileOutputStream(tempFile));
 
             zipOs.putNextEntry(new ZipEntry("masseutsendelse.xml"));
             IOUtils.write(createMasseutsendelse(recipients), zipOs);
@@ -63,11 +66,10 @@ public class CreateDigipostZip {
             zipOs.finish();
             zipOs.close();
 
-            return new ByteArrayInputStream(zipped.toByteArray());
+            return new FileInputStream(tempFile);
         } catch (IOException e) {
             throw new RuntimeException("Error when creating zip-archive.", e);
         }
-
     }
 
     private byte[] createMasseutsendelse(List<no.bekk.digiq.Message> recipients) {

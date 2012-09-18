@@ -45,4 +45,15 @@ public class FilesystemFileStore implements FileStore {
         return String.valueOf(message.id);
     }
 
+    @Override
+    public File createTempfile() {
+        File tempDir = new File(store, "temp");
+        tempDir.mkdir();
+        try {
+            return File.createTempFile("batch", ".tmp", tempDir);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to create temporary file in: " + tempDir.getAbsolutePath(),e);
+        }
+    }
+
 }

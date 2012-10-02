@@ -1,4 +1,4 @@
-package no.bekk.digiq;
+package no.bekk.digiq.routes;
 
 import java.util.Properties;
 
@@ -13,6 +13,11 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import no.bekk.digiq.DigiqCamelTestBase;
+import no.bekk.digiq.Forsendelse;
+import no.bekk.digiq.HubConfiguration;
+import no.bekk.digiq.MainRoutes;
+import no.bekk.digiq.TestUtil;
 import no.bekk.digiq.adapters.smtp.SmtpAdapter;
 
 import org.apache.camel.Exchange;
@@ -31,22 +36,22 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        
+
         startCamel(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from(MainRoutes.INCOMING).to("mock:incoming");
             }
         });
-        
+
         config = new HubConfiguration(store.getAbsolutePath(), null, null, "25000");
-        smtpAdapter = new SmtpAdapter(context, config);
-        smtpAdapter.start();
+        smtpAdapter = new SmtpAdapter(config);
+        smtpAdapter.addTo(context);
     }
 
     @After
-    public void tearDown() {
-        smtpAdapter.stop();
+    public void tearDown() throws Exception {
+        smtpAdapter.destroy();
     }
 
     @Test
@@ -55,7 +60,7 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
         MockEndpoint incoming = getMockEndpoint("mock:incoming");
         Exchange received = incoming.assertExchangeReceived(0);
         Forsendelse body = received.getIn().getBody(Forsendelse.class);
-        
+
         assertNotNull(body);
         assertEquals(DIGIPOSTADRESS, body.digipostAdresse);
         TestUtil.assertPdfContent(body.pdf);
@@ -74,7 +79,7 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
 
         MimeBodyPart attachFilePart = new MimeBodyPart();
         ByteArrayDataSource ds = new ByteArrayDataSource(getClass().getResourceAsStream("/Fra_gustav.pdf"), "application/pdf");
-        
+
         attachFilePart.setDataHandler(new DataHandler(ds));
         attachFilePart.setFileName("Fra_gustav.pdf");
 

@@ -1,6 +1,8 @@
 
 
-Adapters som skickar vidare till en standard-route
+
+Adapters som skickar vidare till en standard-route 
+- nja, standard-route ¾r lite ¿verkomplicerande. borde ha en service som lagrar direkt
 - Fil-adapter
 - Mail-adapter
 - RMI-adapter

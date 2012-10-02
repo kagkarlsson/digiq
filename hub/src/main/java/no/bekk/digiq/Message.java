@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Message {
@@ -33,6 +34,9 @@ public class Message {
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
 	public Status status;
+    
+    @ManyToOne
+    public MessageBatch batch;
     
     private Message() {
     }

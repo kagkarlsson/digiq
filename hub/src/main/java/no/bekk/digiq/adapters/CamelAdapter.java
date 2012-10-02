@@ -1,9 +1,9 @@
 package no.bekk.digiq.adapters;
 
+import org.apache.camel.CamelContext;
+
 public interface CamelAdapter {
 
-    void stop();
-
-    void start();
+    void addTo(CamelContext context);
 
 }

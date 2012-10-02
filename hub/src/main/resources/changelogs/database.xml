@@ -9,6 +9,8 @@
 				<constraints primaryKeyName="MESSAGE_PK" primaryKey="true"
 					nullable="false" />
 			</column>
+			
+			<column type="NUMBER(19,0)" name="BATCH_ID" />
 			<column type="VARCHAR(255)" name="SUBJECT" />
 			<column type="VARCHAR(255)" name="DIGIPOSTADDRESS" />
 			<column type="VARCHAR(11)" name="PERSONAL_IDENTIFICATION_NUMBER" />

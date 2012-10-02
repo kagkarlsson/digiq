@@ -1,10 +1,6 @@
 package no.bekk.digiq;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import no.bekk.digiq.adapters.CamelAdapter;
-import no.bekk.digiq.adapters.smtp.SmtpAdapter;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -18,79 +14,78 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class HubMain {
 
     private static final Logger LOG = LoggerFactory.getLogger(HubMain.class);
-    
-	public static void main(String[] args) throws Exception {
-		
-	    String configFile = System.getProperty("configFile");
+
+    public static void main(String[] args) throws Exception {
+        new HubMain().start();
+    }
+
+    private void start() throws Exception {
+        String configFile = System.getProperty("configFile");
         if (configFile == null) {
-            throw new RuntimeException("Unable to start. System property 'configFile' must be set and point to a " +
-                    "java properties file with application configuration.");
+            throw new RuntimeException("Unable to start. System property 'configFile' must be set and point to a "
+                    + "java properties file with application configuration.");
         }
-        
-		ClassPathXmlApplicationContext springContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-		
-		LOG.info("Validating hub configuration.");
-		HubConfiguration config = springContext.getBean(HubConfiguration.class);
+
+        ClassPathXmlApplicationContext springContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        validateConfiguration(springContext);
+
+        final CamelContext context = new DefaultCamelContext(new ApplicationContextRegistry(springContext));
+        Runtime.getRuntime().addShutdownHook(new GracefulShutdown(springContext, context));
+        springContext.start();
+
+        configureAndStartCamelContext(springContext, context);
+
+        awaitTermination();
+
+    }
+
+    private void validateConfiguration(ClassPathXmlApplicationContext springContext) {
+        LOG.info("Validating hub configuration.");
+        HubConfiguration config = springContext.getBean(HubConfiguration.class);
         config.validateConfiguration();
-		
-		
-		final CamelContext context = new DefaultCamelContext(new ApplicationContextRegistry(springContext));
+    }
 
-
-		for (RouteBuilder route : springContext.getBean(MainRoutes.class).getRouteBuilders()) {
-		    context.addRoutes(route);
+    private void configureAndStartCamelContext(ClassPathXmlApplicationContext springContext, final CamelContext context) throws Exception {
+        for (RouteBuilder route : springContext.getBean(MainRoutes.class).getRouteBuilders()) {
+            context.addRoutes(route);
         }
 
-		List<CamelAdapter> adapters = new ArrayList<CamelAdapter>();
-		adapters.add(new SmtpAdapter(context, config));
-		
-		Runtime.getRuntime().addShutdownHook(new GracefulShutdown(springContext, context, adapters));
-		
-		springContext.start();
-		context.start();
-		
-		for (CamelAdapter camelAdapter : adapters) {
-            camelAdapter.start();
+        for (CamelAdapter camelAdapter : springContext.getBeansOfType(CamelAdapter.class).values()) {
+            camelAdapter.addTo(context);
         }
-		
-		awaitTermination();
-	}
 
+        context.start();
+    }
 
     private static void awaitTermination() {
         while (true) {
-		    try {
+            try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 break;
             }
-		}
+        }
     }
-	
-    private static class GracefulShutdown extends Thread{
-		private final AbstractApplicationContext springContext;
-		private final CamelContext context;
-        private final List<CamelAdapter> adapters;
 
-		public GracefulShutdown(AbstractApplicationContext springContext, CamelContext context, List<CamelAdapter> adapters) {
-			this.springContext = springContext;
-			this.context = context;
-            this.adapters = adapters;
-		}
-		
-		
-		@Override
-		public void run() {
-		    LOG.info("Shutting down hub application");
-			try {
-			    for (CamelAdapter a : adapters) {
-			        a.stop();
-                }
-				context.stop();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			springContext.stop();
-		}
-	}
+    private static class GracefulShutdown extends Thread {
+        private final AbstractApplicationContext springContext;
+        private final CamelContext context;
+
+        public GracefulShutdown(AbstractApplicationContext springContext, CamelContext context) {
+            this.springContext = springContext;
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            LOG.info("Shutting down hub application");
+            try {
+                context.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            springContext.stop();
+        }
+    }
 }

@@ -1,9 +1,12 @@
-package no.bekk.digiq;
+package no.bekk.digiq.routes;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import no.bekk.digiq.DigiqCamelTestBase;
+import no.bekk.digiq.Message;
+import no.bekk.digiq.MessageBuilder;
 import no.bekk.digiq.Message.Status;
 import no.bekk.digiq.dao.MessageDao;
 import no.bekk.digiq.file.FileStore;

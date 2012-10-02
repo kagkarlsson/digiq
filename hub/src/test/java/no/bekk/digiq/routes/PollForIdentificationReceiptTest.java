@@ -1,4 +1,4 @@
-package no.bekk.digiq;
+package no.bekk.digiq.routes;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,6 +11,7 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.Resource;
 import javax.xml.transform.stream.StreamResult;
 
+import no.bekk.digiq.DigiqCamelTestBase;
 import no.bekk.digiq.handlers.ParseIdentificationReceipt;
 import no.bekk.digiq.routes.PollForIdentificationReceipt;
 import no.bekk.digiq.xml.MasseutsendelseResultatBuilder;

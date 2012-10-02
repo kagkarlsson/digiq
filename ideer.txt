@@ -1,10 +1,7 @@
 
-
-
-Adapters som skickar vidare till en standard-route 
-- nja, standard-route ¾r lite ¿verkomplicerande. borde ha en service som lagrar direkt
-- Fil-adapter
+Adapters fšr olika in-kanaler: 
 - Mail-adapter
+- Fil-adapter
 - RMI-adapter
 
 Enkelt admin-grÃ¤nssnitt

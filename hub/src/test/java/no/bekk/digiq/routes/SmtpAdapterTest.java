@@ -1,8 +1,10 @@
 package no.bekk.digiq.routes;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
+import javax.annotation.Resource;
 import javax.mail.Message.RecipientType;
 import javax.mail.Multipart;
 import javax.mail.Session;
@@ -12,17 +14,18 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import no.bekk.digiq.DigiqCamelTestBase;
-import no.bekk.digiq.Forsendelse;
 import no.bekk.digiq.HubConfiguration;
-import no.bekk.digiq.MainRoutes;
+import no.bekk.digiq.Message;
 import no.bekk.digiq.TestUtil;
 import no.bekk.digiq.adapters.smtp.SmtpAdapter;
+import no.bekk.digiq.file.FileStore;
+import no.bekk.digiq.handlers.StoreMessage;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,20 +35,21 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
     private static final String DIGIPOSTADRESS = "test.testsson#0000";
     private SmtpAdapter smtpAdapter;
     private HubConfiguration config;
+    @Resource
+    private StoreMessage storeMessage;
+    @Resource
+    private FileStore fileStore;
+    @PersistenceContext
+    private EntityManager em;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        startCamel(new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                from(MainRoutes.INCOMING).to("mock:incoming");
-            }
-        });
+        startCamel();
 
         config = new HubConfiguration(store.getAbsolutePath(), null, null, "25000");
-        smtpAdapter = new SmtpAdapter(config);
+        smtpAdapter = new SmtpAdapter(storeMessage, config);
         smtpAdapter.addTo(context);
     }
 
@@ -55,15 +59,18 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
     }
 
     @Test
-    public void test() throws Exception {
+    public void adapterShouldReceiveAndStoreMail() throws Exception {
         sendMail("localhost", config.getSmtpPort());
-        MockEndpoint incoming = getMockEndpoint("mock:incoming");
-        Exchange received = incoming.assertExchangeReceived(0);
-        Forsendelse body = received.getIn().getBody(Forsendelse.class);
+        
+        Thread.sleep(2000); //TODO: fix with better await-logic
+        
+        List<Message> messges = em.createQuery("from " + Message.class.getSimpleName(), Message.class).getResultList();
+        
+        Message body = messges.get(0);
 
         assertNotNull(body);
-        assertEquals(DIGIPOSTADRESS, body.digipostAdresse);
-        TestUtil.assertPdfContent(body.pdf);
+        assertEquals(DIGIPOSTADRESS, body.digipostAddress);
+        TestUtil.assertPdfContent(IOUtils.toByteArray(fileStore.read(body)));
     }
 
     private void sendMail(String host, int port) throws Exception {

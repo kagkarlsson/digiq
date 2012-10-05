@@ -1,8 +1,15 @@
 
 Adapters fšr olika in-kanaler: 
-- Mail-adapter  (todo. set subject etc.. )
+- Mail-adapter  (todo. set subject etc.. ev. svara from-adress nŠr message skickat)
 - Fil-adapter
 - RMI-adapter
+
+BŠttre parsning av kvitteringar
+- status per forsendelse
+
+Mottakersplittadapter
+- mšjlighet fšr adapter att lyssna pŒ responser (kvittering)
+
 
 Enkelt admin-grÃ¤nssnitt
 - listar innkomna fÃ¶rsÃ¤ndelser
@@ -16,7 +23,8 @@ Lagring av misslyckade fÃ¶rsÃ¤ndelser
 - Mappe med all data + pdfer?
 - Ryddejobb? 
 
+
+
 Fildatabase i prod-version
-- Lazy load av content? (streaming fra database)
 
 

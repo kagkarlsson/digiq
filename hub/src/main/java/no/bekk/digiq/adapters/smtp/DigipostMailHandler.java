@@ -1,20 +1,20 @@
 package no.bekk.digiq.adapters.smtp;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.mail.BodyPart;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.ParseException;
 
 import no.bekk.digiq.Forsendelse;
 import no.bekk.digiq.adapters.IncomingMessageListener;
@@ -27,15 +27,18 @@ import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.RejectException;
 
-public class DigipostMailHandler implements MessageHandler{
-    
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+public class DigipostMailHandler implements MessageHandler {
+
     public static final Pattern RECIPIENT_PATTERN = Pattern.compile("^[a-z.]+#[0-9A-Z]{4}$");
     private static final Logger LOG = LoggerFactory.getLogger(DigipostMailHandler.class);
-    
+
     private List<String> recipients = new ArrayList<String>();
     private final MessageContext ctx;
     private final IncomingMessageListener listener;
-    
+
     public DigipostMailHandler(MessageContext ctx, IncomingMessageListener listener) {
         this.ctx = ctx;
         this.listener = listener;
@@ -57,28 +60,27 @@ public class DigipostMailHandler implements MessageHandler{
         LOG.debug(new String(dataBytes));
 
         try {
-            MimeMessage message = new MimeMessage(
-                    Session.getInstance(new Properties()), new ByteArrayInputStream(dataBytes));
+            MimeMessage message = new MimeMessage(Session.getInstance(new Properties()), new ByteArrayInputStream(dataBytes));
             MimeMultipart multipart = (MimeMultipart) message.getContent();
+
+            byte[] pdfAttachment = findPdfAttachment(multipart);
+            if (pdfAttachment == null) {
+                LOG.warn("Could not find any pdf attachment in mail message.");
+                return;
+            }
+
+            String subject = findSubject(message);
+            if (subject == null) {
+                LOG.warn("Could not find subject.");
+                return;
+            }
 
             for (String recipient : recipients) {
 
                 if (RECIPIENT_PATTERN.matcher(recipient).matches()) {
-
-                    for (int i = 0; i < multipart.getCount(); i++) {
-                        BodyPart part = multipart.getBodyPart(i);
-                        ContentType contentType = new ContentType(
-                                part.getContentType());
-                        if (contentType.match("application/pdf")) {
-                            LOG.debug("Fant pdf attachment.");
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            IOUtils.copy(part.getInputStream(), baos);
-                            listener.received(new Forsendelse("subject", recipient, null, null, null, null, null, null, null, baos.toByteArray()));
-                        }
-                    }
-
+                    listener.received(new Forsendelse(subject, recipient, null, null, null, null, null, null, null, pdfAttachment));
                 } else {
-                    LOG.warn("Ugyldig recipient '{}'. Sender ikke.", recipient);
+                    LOG.warn("Invalid recipient address '{}'. Not sending.", recipient);
                 }
             }
         } catch (Exception e) {
@@ -86,22 +88,32 @@ public class DigipostMailHandler implements MessageHandler{
         }
     }
 
-    public void done() {
-        LOG.debug("Finished");
+    private String findSubject(MimeMessage message) throws MessagingException {
+        String[] subjects = message.getHeader("Subject");
+        if (subjects == null || subjects.length == 0) {
+            return null;
+        }
+        if (subjects.length > 1) {
+            LOG.warn("More than one subject specified in mail headers.");
+        }
+        return subjects[0];
     }
 
-    public String convertStreamToString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+    private byte[] findPdfAttachment(MimeMultipart multipart) throws MessagingException, ParseException, IOException {
+        for (int i = 0; i < multipart.getCount(); i++) {
+            BodyPart part = multipart.getBodyPart(i);
+            ContentType contentType = new ContentType(part.getContentType());
+            if (contentType.match("application/pdf")) {
+                LOG.debug("Found pdf attachment.");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                IOUtils.copy(part.getInputStream(), baos);
+                return baos.toByteArray();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return sb.toString();
+        return null;
+    }
+
+    public void done() {
+        LOG.debug("Finished");
     }
 }

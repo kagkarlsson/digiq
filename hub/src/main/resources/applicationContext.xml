@@ -19,7 +19,7 @@
 		<property name="location" value="file:${configFile}" />
 	</bean>
 
-	<import resource="beans.xml" />
+	<import resource="camel-beans.xml" />
 	<import resource="xsd-beans.xml" />
 	<import resource="database-beans.xml" />
 

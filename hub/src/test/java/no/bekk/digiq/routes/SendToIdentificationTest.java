@@ -53,7 +53,6 @@ public class SendToIdentificationTest extends DigiqCamelTestBase {
 		notify.matches(5, TimeUnit.SECONDS);
 		
 		sftpMock.assertExchangeReceived(0);
-		assertEquals(0, messageDao.listWithStatus(Status.IDENTIFY).size());
 	}
 	
 	@Test

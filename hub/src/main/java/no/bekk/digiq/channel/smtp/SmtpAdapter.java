@@ -1,9 +1,9 @@
-package no.bekk.digiq.adapters.smtp;
+package no.bekk.digiq.channel.smtp;
 
 import no.bekk.digiq.Forsendelse;
 import no.bekk.digiq.HubConfiguration;
-import no.bekk.digiq.adapters.CamelAdapter;
-import no.bekk.digiq.adapters.IncomingMessageListener;
+import no.bekk.digiq.channel.CamelChannel;
+import no.bekk.digiq.channel.IncomingMessageListener;
 import no.bekk.digiq.handlers.StoreMessage;
 
 import org.apache.camel.CamelContext;
@@ -18,7 +18,7 @@ import org.subethamail.smtp.MessageHandlerFactory;
 import org.subethamail.smtp.server.SMTPServer;
 
 @Component
-public class SmtpAdapter implements CamelAdapter, DisposableBean {
+public class SmtpAdapter implements CamelChannel, DisposableBean {
     static final Logger LOG = LoggerFactory.getLogger(DigipostMailHandler.class);
     private SMTPServer smtpServer;
     private final HubConfiguration config;

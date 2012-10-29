@@ -75,4 +75,9 @@ public class MasseutsendelseResultatBuilder {
         
         return resultat;
     }
+
+    public MasseutsendelseResultatBuilder withJobbId(String jobbId) {
+        this.jobbId = jobbId;
+        return this;
+    }
 }

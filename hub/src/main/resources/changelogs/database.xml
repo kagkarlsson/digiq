@@ -26,4 +26,17 @@
 		<addAutoIncrement tableName="MESSAGE" columnName="ID" columnDataType="NUMBER(19,0)" />
 	</changeSet>
 
+	<changeSet author="gustav karlsson" id="CREATE TABLE MESSAGE_BATCH">
+		<createTable tableName="MESSAGE_BATCH">
+			<column type="NUMBER(19,0)" name="ID">
+				<constraints primaryKeyName="MESSAGE_BATCH_PK" primaryKey="true"
+					nullable="false" />
+			</column>
+			
+			<column type="VARCHAR(40)" name="DIGIPOST_JOBB_ID" />
+		</createTable>
+		
+		<addAutoIncrement tableName="MESSAGE_BATCH" columnName="ID" columnDataType="NUMBER(19,0)" />
+	</changeSet>
+
 </databaseChangeLog>

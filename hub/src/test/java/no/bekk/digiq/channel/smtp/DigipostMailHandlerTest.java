@@ -1,11 +1,12 @@
-package no.bekk.digiq.adapters.smtp;
+package no.bekk.digiq.channel.smtp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import no.bekk.digiq.Forsendelse;
 import no.bekk.digiq.TemplateResource;
 import no.bekk.digiq.TestUtil;
-import no.bekk.digiq.adapters.IncomingMessageListener;
+import no.bekk.digiq.channel.IncomingMessageListener;
+import no.bekk.digiq.channel.smtp.DigipostMailHandler;
 
 import org.junit.Before;
 import org.junit.Test;

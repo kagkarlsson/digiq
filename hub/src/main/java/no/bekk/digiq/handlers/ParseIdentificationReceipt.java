@@ -48,6 +48,7 @@ public class ParseIdentificationReceipt {
         if (FilenameUtils.isExtension(singleKey, "xml")) {
             XmlMasseutsendelseResultat result = (XmlMasseutsendelseResultat) unmarshaller.unmarshal(new BytesSource(content));
             parseReceipt(result);
+            exchange.getOut().setBody(result);
         } else {
             LOG.error("A message was unparsable by Digipost.");
         }

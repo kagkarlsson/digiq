@@ -7,6 +7,9 @@ Adapters fšr olika in-kanaler:
 BŠttre parsning av kvitteringar
 - status per forsendelse
 
+Skicka svar tillbaka till adapter
+- SMTP-adapter kan lŠgga svar pŒ pop-server (evt. gŒ šver till greenmail fšr det...)
+
 Mottakersplittadapter
 - mšjlighet fšr adapter att lyssna pŒ responser (kvittering)
 

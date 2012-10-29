@@ -1,4 +1,4 @@
-package no.bekk.digiq.adapters;
+package no.bekk.digiq.channel;
 
 import no.bekk.digiq.Forsendelse;
 

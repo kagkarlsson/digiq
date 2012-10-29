@@ -1,8 +1,8 @@
-package no.bekk.digiq.adapters;
+package no.bekk.digiq.channel;
 
 import org.apache.camel.CamelContext;
 
-public interface CamelAdapter {
+public interface CamelChannel {
 
     void addTo(CamelContext context);
 

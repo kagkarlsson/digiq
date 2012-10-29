@@ -1,4 +1,4 @@
-package no.bekk.digiq.adapters.smtp;
+package no.bekk.digiq.channel.smtp;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.ParseException;
 
 import no.bekk.digiq.Forsendelse;
-import no.bekk.digiq.adapters.IncomingMessageListener;
+import no.bekk.digiq.channel.IncomingMessageListener;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;

@@ -9,9 +9,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.xml.transform.stream.StreamResult;
 
 import no.bekk.digiq.DigiqCamelTestBase;
+import no.bekk.digiq.MessageBatch;
+import no.bekk.digiq.MessageBuilder;
+import no.bekk.digiq.dao.MessageDao;
+import no.bekk.digiq.handlers.NotifyListeners;
 import no.bekk.digiq.handlers.ParseIdentificationReceipt;
 import no.bekk.digiq.routes.PollForIdentificationReceipt;
 import no.bekk.digiq.xml.MasseutsendelseResultatBuilder;
@@ -27,12 +33,20 @@ public class PollForIdentificationReceiptTest extends DigiqCamelTestBase {
     private ParseIdentificationReceipt parseIdentificationReceipt;
     @Resource
     private Jaxb2Marshaller marshaller;
+    @Resource
+    private NotifyListeners notifyListeners;
+    @Resource
+    private MessageDao messageDao;
+    
     private PollForIdentificationReceipt routes;
+    private MessageBatch batch;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        routes = new PollForIdentificationReceipt(parseIdentificationReceipt);
+        routes = new PollForIdentificationReceipt(parseIdentificationReceipt, notifyListeners);
+        messageDao.create(MessageBuilder.newMessage().build());
+        batch = messageDao.createMessageBatch();
     }
     
     @Test
@@ -41,7 +55,7 @@ public class PollForIdentificationReceiptTest extends DigiqCamelTestBase {
         NotifyBuilder notify = new NotifyBuilder(context).whenDone(1).create();
         
         template.sendBody("direct:sftpPollForReceipt", 
-                createReceiptZip(MasseutsendelseResultatBuilder.newResult().build()));
+                createReceiptZip(MasseutsendelseResultatBuilder.newResult().withJobbId(batch.digipostJobbId).build()));
         
         notify.matches(5, TimeUnit.SECONDS);
     }

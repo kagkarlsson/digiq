@@ -47,7 +47,7 @@ public class DigiqCamelTestBase extends CamelTestSupport implements
 	@After
 	public void after() throws Exception {
 		super.tearDown();
-		jdbcTemplate.update("delete from message");
+		new DatabaseUtil(jdbcTemplate).clearDatabase();
 	}
 
 	@Override

@@ -53,4 +53,9 @@ public class MessageBuilder {
         return this;
     }
 
+    public MessageBuilder withStatus(Status status) {
+        this.status = status;
+        return this;
+    }
+
 }

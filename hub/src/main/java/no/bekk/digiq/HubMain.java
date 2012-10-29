@@ -1,6 +1,6 @@
 package no.bekk.digiq;
 
-import no.bekk.digiq.adapters.CamelAdapter;
+import no.bekk.digiq.channel.CamelChannel;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -51,7 +51,7 @@ public class HubMain {
             context.addRoutes(route);
         }
 
-        for (CamelAdapter camelAdapter : springContext.getBeansOfType(CamelAdapter.class).values()) {
+        for (CamelChannel camelAdapter : springContext.getBeansOfType(CamelChannel.class).values()) {
             camelAdapter.addTo(context);
         }
 

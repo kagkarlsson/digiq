@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.Map;
 
 import no.bekk.digiq.HubConfiguration;
+import no.bekk.digiq.Message;
+import no.bekk.digiq.MessageBatch;
 import no.bekk.digiq.MessageBuilder;
 import no.bekk.digiq.XsdHelper;
 import no.bekk.digiq.file.FileStore;
@@ -40,14 +42,18 @@ public class CreateDigipostZipTest {
 
     @Test
     public void testShouldCreateMasseutsendelseForOneRecipient() throws IOException {
-        InputStream is = activity.createZip(Lists.newArrayList(MessageBuilder.newMessage().withId(1).build()));
+        InputStream is = activity.createZip(newBatch(MessageBuilder.newMessage().withId(1).build()));
 
         assertZipOk(is);
     }
 
+    private MessageBatch newBatch(Message build) {
+        return new MessageBatch("digipostId", Lists.newArrayList(build));
+    }
+
     @Test
     public void testShouldCreateMasseutsendelseForOneRecipientIdentifiedByPersonalIdNumber() throws IOException {
-        InputStream is = activity.createZip(Lists.newArrayList(MessageBuilder.newMessage().withId(1).withNoAdress()
+        InputStream is = activity.createZip(newBatch(MessageBuilder.newMessage().withId(1).withNoAdress()
                 .withPersonalIdentificationNumber("12312312300").build()));
 
         assertZipOk(is);
@@ -55,7 +61,7 @@ public class CreateDigipostZipTest {
 
     @Test
     public void testShouldCreateMasseutsendelseForOneRecipientIdentifiedByDigipostadress() throws IOException {
-        InputStream is = activity.createZip(Lists.newArrayList(MessageBuilder.newMessage().withId(1).withNoAdress()
+        InputStream is = activity.createZip(newBatch(MessageBuilder.newMessage().withId(1).withNoAdress()
                 .withDigipostadress("test.person#1234").build()));
 
         assertZipOk(is);

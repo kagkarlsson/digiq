@@ -1,12 +1,14 @@
 package no.bekk.digiq.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import no.bekk.digiq.Message;
 import no.bekk.digiq.Message.Status;
+import no.bekk.digiq.MessageBatch;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,30 +27,27 @@ public class MessageDaoImpl implements MessageDao {
     }
 
     @Override
-    @Transactional
-    public List<Message> reserveMessagesToIdentification() {
-        List<Message> toIdentification = listWithStatus(Status.IDENTIFY);
-        for (Message message : toIdentification) {
-            updateStatus(message, Status.NOT_SENT);
-        }
-        return toIdentification;
-    }
-
-    @Override
-    @Transactional
-    public void updateStatus(Message m, Status status) {
-        em.find(Message.class, m.id).status = status;
-    }
-
-    @Override
-    public int count() {
-        return em.createQuery("select count(1) from Message", Long.class).getSingleResult().intValue();
-    }
-
-    @Override
     public List<Message> listWithStatus(Status identify) {
         return em.createQuery("from Message m where status = :status", Message.class).setParameter("status", identify)
                 .getResultList();
+    }
+
+    @Override
+    public MessageBatch getBatch(String digipostJobbId) {
+        return em.createQuery("from MessageBatch mb where digipostJobbId = :digipostJobbId", MessageBatch.class).setParameter("digipostJobbId", digipostJobbId).getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public MessageBatch createMessageBatch() {
+        List<Message> messages = listWithStatus(Status.IDENTIFY);
+        if (messages.size() == 0){
+            return MessageBatch.EMPTY;
+        } else  {
+            MessageBatch messageBatch = new MessageBatch(UUID.randomUUID().toString(), messages);
+            em.persist(messageBatch);
+            return messageBatch;
+        }
     }
 
 }

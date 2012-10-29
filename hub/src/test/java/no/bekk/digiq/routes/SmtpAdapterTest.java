@@ -21,7 +21,7 @@ import no.bekk.digiq.DigiqCamelTestBase;
 import no.bekk.digiq.HubConfiguration;
 import no.bekk.digiq.Message;
 import no.bekk.digiq.TestUtil;
-import no.bekk.digiq.adapters.smtp.SmtpAdapter;
+import no.bekk.digiq.channel.smtp.SmtpAdapter;
 import no.bekk.digiq.file.FileStore;
 import no.bekk.digiq.handlers.StoreMessage;
 

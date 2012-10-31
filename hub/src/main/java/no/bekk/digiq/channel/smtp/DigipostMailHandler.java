@@ -69,7 +69,7 @@ public class DigipostMailHandler implements MessageHandler {
                 return;
             }
 
-            String subject = findSubject(message);
+            String subject = message.getSubject();
             if (subject == null) {
                 LOG.warn("Could not find subject.");
                 return;
@@ -88,16 +88,6 @@ public class DigipostMailHandler implements MessageHandler {
         }
     }
 
-    private String findSubject(MimeMessage message) throws MessagingException {
-        String[] subjects = message.getHeader("Subject");
-        if (subjects == null || subjects.length == 0) {
-            return null;
-        }
-        if (subjects.length > 1) {
-            LOG.warn("More than one subject specified in mail headers.");
-        }
-        return subjects[0];
-    }
 
     private byte[] findPdfAttachment(MimeMultipart multipart) throws MessagingException, ParseException, IOException {
         for (int i = 0; i < multipart.getCount(); i++) {

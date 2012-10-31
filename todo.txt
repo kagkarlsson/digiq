@@ -1,14 +1,8 @@
 
 Olika channels som tar emot forsendelser: 
-- Mail-adapter  (todo. set subject etc.. ev. svara from-adress nŠr message skickat)
 - Fil-adapter
 - RMI-adapter
-
-BŠttre parsning av kvitteringar
-- status per forsendelse
-
-Skicka svar tillbaka till adapter
-- SMTP-adapter kan lŠgga svar pŒ pop-server (evt. gŒ šver till greenmail fšr det...)
+- ...
 
 Mottakersplittadapter
 - mšjlighet fšr adapter att lyssna pŒ responser (kvittering)

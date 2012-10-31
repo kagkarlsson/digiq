@@ -1,15 +1,22 @@
 
 Hub for collecting messages from different channels and sending them to Digipost in batches.
 
+Channels implemented so far:
+- Mail (Two-way using SMTP/POP)
+
+
+Usage
+============================================
+Start
+-----
 * Rename hub.properties.template to hub.properties and enter your Digipost sender's settings.
 * Run hub
   cd hub/
   mvn clean install
   mvn exec:java
   
-  
-  
-To send a letter in Digipost via the SMTP-channel:
+To send a letter in Digipost via the SMTP-channel
+-------------------------------------------------
 * Define a new SMTP-account in your mail-client. 
   Email-adress: to@localhost.com
   Username: user

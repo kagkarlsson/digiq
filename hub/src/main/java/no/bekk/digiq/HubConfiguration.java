@@ -43,6 +43,11 @@ public class HubConfiguration {
         return Integer.parseInt(smtpPort);
     }
 
+    public int getPopPort() {
+        // TODO hardcoded
+        return 25001;
+    }
+
     public void validateConfiguration() {
         List<String> errors = new ArrayList<String>();
         if (senderId == null || !numerical(senderId)) {

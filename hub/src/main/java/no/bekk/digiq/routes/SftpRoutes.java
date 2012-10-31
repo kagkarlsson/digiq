@@ -13,7 +13,7 @@ public class SftpRoutes extends RouteBuilder {
 
         from("sftp://{{sftp.user}}@{{sftp.host}}:{{sftp.path}}/masseutsendelse/kvittering"
                         + "?privateKeyFile={{sftp.key.file}}&privateKeyFilePassphrase={{sftp.key.password}}&knownHostsFile={{known.hosts.file}}"
-                        + "&delete=true&readLock=changed&delay=5000")
+                        + "&delete=true&readLock=changed&delay=5000&filter=#digiqFileFilter")
         .log("Downloading receipt from Digipost SFTP.")
         .to("direct:sftpPollForReceipt");
 

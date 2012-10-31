@@ -98,7 +98,7 @@ public class MasseutsendelseBuilder {
 
     private XmlMottaker newMottaker(Message mottaker) {
         XmlMottaker xmlMottaker = new XmlMottaker();
-        xmlMottaker.setKundeId(String.valueOf(mottaker.id));
+        xmlMottaker.setKundeId(mottaker.getRecepientId());
         if (mottaker.personalIdentificationNumber != null) {
             xmlMottaker.setFoedselsnummer(mottaker.personalIdentificationNumber);
         } else if (mottaker.digipostAddress != null) {

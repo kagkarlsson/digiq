@@ -8,12 +8,13 @@ import no.bekk.digiq.MessageBatch;
 
 public interface MessageDao {
 
-    public abstract Message create(Message m);
+    Message getMessage(long id);
+    Message create(Message m);
 
-    public abstract List<Message> listWithStatus(Status identify);
+    List<Message> listWithStatus(Status identify);
 
-    public abstract MessageBatch createMessageBatch();
+    MessageBatch createMessageBatch();
 
-    public abstract MessageBatch getBatch(String digipostJobbId);
+    MessageBatch getBatch(String digipostJobbId);
 
 }

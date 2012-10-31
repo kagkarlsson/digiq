@@ -8,6 +8,7 @@ import no.bekk.digiq.handlers.GetMessagesToIdentification;
 import no.bekk.digiq.handlers.NotifyListeners;
 import no.bekk.digiq.handlers.ParseIdentificationReceipt;
 import no.bekk.digiq.handlers.StoreMessage;
+import no.bekk.digiq.handlers.UpdateSentMessages;
 import no.bekk.digiq.routes.PollForIdentificationReceipt;
 import no.bekk.digiq.routes.SendToIdentificationRoute;
 import no.bekk.digiq.routes.SftpRoutes;
@@ -31,22 +32,25 @@ public class MainRoutes {
 
     private final NotifyListeners notifyListeners;
 
+    private final UpdateSentMessages updateSentMessages;
+
 	@Autowired
 	public MainRoutes(StoreMessage storeMessage, MessageDao messageDao, CreateDigipostZip createDigipostZip, 
 	        GetMessagesToIdentification getMessagesToIdentification, ParseIdentificationReceipt parseIdentificationReceipt,
-	        NotifyListeners notifyListeners) {
+	        NotifyListeners notifyListeners, UpdateSentMessages updateSentMessages) {
 		this.storeMessage = storeMessage;
 		this.createDigipostZip = createDigipostZip;
         this.getMessagesToIdentification = getMessagesToIdentification;
         this.parseIdentificationReceipt = parseIdentificationReceipt;
         this.notifyListeners = notifyListeners;
+        this.updateSentMessages = updateSentMessages;
 	}
 	
 	public List<RouteBuilder> getRouteBuilders() {
 	    return Lists.newArrayList(
 	            new StoreIncoming(storeMessage), 
 	            new SendToIdentificationRoute(getMessagesToIdentification, createDigipostZip), 
-	            new PollForIdentificationReceipt(parseIdentificationReceipt, notifyListeners),
+	            new PollForIdentificationReceipt(parseIdentificationReceipt, updateSentMessages, notifyListeners),
 	            new SftpRoutes());
 	}
 

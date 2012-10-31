@@ -1,10 +1,12 @@
 package no.bekk.digiq;
 
+import org.springframework.test.util.ReflectionTestUtils;
+
 import no.bekk.digiq.Message.Status;
 
 public class MessageBuilder {
 
-	private long id = 1;
+	private long id;
 	private String subject = "Subject";
 	private String digipostAddress;
 	private String personalIdentificationNumber;
@@ -15,6 +17,7 @@ public class MessageBuilder {
 	private String city = "Bergen";
 	private String country;
 	private Status status = Status.IDENTIFY;
+	private String channel = "dummychannel";
 
 	private MessageBuilder() {
 		
@@ -25,7 +28,11 @@ public class MessageBuilder {
 	}
 	
 	public Message build() {
-		return new Message(id, subject, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipCode, city, country, status);
+		Message message = new Message(subject, digipostAddress, personalIdentificationNumber, name, addressline1, addressline2, zipCode, city, country, status, channel);
+		if (id > 0) {
+		    ReflectionTestUtils.setField(message, "id", id);
+		}
+        return message;
 	}
 
     public MessageBuilder withId(long id) {
@@ -55,6 +62,11 @@ public class MessageBuilder {
 
     public MessageBuilder withStatus(Status status) {
         this.status = status;
+        return this;
+    }
+
+    public MessageBuilder withChannel(String channel) {
+        this.channel = channel;
         return this;
     }
 

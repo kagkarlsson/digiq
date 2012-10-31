@@ -1,8 +1,7 @@
 package no.bekk.digiq.channel;
 
-import org.springframework.stereotype.Component;
+public interface ChannelResolver {
 
-@Component
-public class ChannelResolver {
+    public abstract TwoWayChannel getTwoWayChannel(String key);
 
 }

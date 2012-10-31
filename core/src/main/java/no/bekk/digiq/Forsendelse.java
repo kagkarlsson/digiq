@@ -15,11 +15,14 @@ public class Forsendelse implements Serializable {
 	public String postnummer;
 	public String poststed;
 	public String land;
+	public String kanalnavn;
 	public byte[] pdf;
+
+
 
 	public Forsendelse(String subject, String digipostAdresse, String foedselsnummer,
 			String navn, String adresselinje1, String adresselinj2,
-			String postnummer, String poststed, String land, byte[] pdf) {
+			String postnummer, String poststed, String land, String kanalNavn, byte[] pdf) {
 		this.subject = subject;
         this.digipostAdresse = digipostAdresse;
 		this.foedselsnummer = foedselsnummer;
@@ -29,6 +32,7 @@ public class Forsendelse implements Serializable {
 		this.postnummer = postnummer;
 		this.poststed = poststed;
 		this.land = land;
+        kanalnavn = kanalNavn;
 		this.pdf = pdf;
 	}
 

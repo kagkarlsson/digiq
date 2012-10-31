@@ -30,7 +30,7 @@ public class MessageDaoIT extends AbstractTransactionalJUnit4SpringContextTests 
     private EntityManager em;
     
     @Test
-    public void test() {
+    public void happy() {
         messageDao.create(MessageBuilder.newMessage().withStatus(Status.IDENTIFY).build());
         em.flush();
         
@@ -39,7 +39,18 @@ public class MessageDaoIT extends AbstractTransactionalJUnit4SpringContextTests 
         em.flush();
         
         MessageBatch fetchedBatch = messageDao.getBatch(batch.digipostJobbId);
-        
+        em.refresh(fetchedBatch);
+        assertEquals(1, fetchedBatch.getMessages().size());
+    }
+    
+    @Test
+    public void createSeveralMessageBatches() {
+        messageDao.create(MessageBuilder.newMessage().withStatus(Status.IDENTIFY).build());
+        messageDao.createMessageBatch();
+        em.flush();
+        messageDao.create(MessageBuilder.newMessage().withStatus(Status.IDENTIFY).build());
+        messageDao.createMessageBatch();
+        em.flush();
     }
     
 }

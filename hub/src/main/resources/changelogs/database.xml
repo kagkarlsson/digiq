@@ -21,6 +21,7 @@
 			<column type="VARCHAR(50)" name="CITY" />
 			<column type="VARCHAR(50)" name="COUNTRY" />
 			<column type="VARCHAR(20)" name="STATUS" />
+			<column type="VARCHAR(20)" name="CHANNEL" />
 		</createTable>
 		
 		<addAutoIncrement tableName="MESSAGE" columnName="ID" columnDataType="NUMBER(19,0)" />

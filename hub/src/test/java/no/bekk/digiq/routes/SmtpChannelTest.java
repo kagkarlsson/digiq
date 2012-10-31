@@ -5,9 +5,13 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.annotation.Resource;
+import javax.mail.Folder;
 import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -20,8 +24,10 @@ import javax.persistence.PersistenceContext;
 import no.bekk.digiq.DigiqCamelTestBase;
 import no.bekk.digiq.HubConfiguration;
 import no.bekk.digiq.Message;
+import no.bekk.digiq.MessageBatch;
+import no.bekk.digiq.MessageBuilder;
 import no.bekk.digiq.TestUtil;
-import no.bekk.digiq.channel.smtp.SmtpAdapter;
+import no.bekk.digiq.channel.smtp.SmtpChannel;
 import no.bekk.digiq.file.FileStore;
 import no.bekk.digiq.handlers.StoreMessage;
 
@@ -30,10 +36,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SmtpAdapterTest extends DigiqCamelTestBase {
+import com.google.common.collect.Lists;
+
+public class SmtpChannelTest extends DigiqCamelTestBase {
 
     private static final String DIGIPOSTADRESS = "test.testsson#0000";
-    private SmtpAdapter smtpAdapter;
+    private SmtpChannel smtpAdapter;
     private HubConfiguration config;
     @Resource
     private StoreMessage storeMessage;
@@ -49,8 +57,8 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
         startCamel();
 
         config = new HubConfiguration(store.getAbsolutePath(), null, null, "25000");
-        smtpAdapter = new SmtpAdapter(storeMessage, config);
-        smtpAdapter.addTo(context);
+        smtpAdapter = new SmtpChannel(storeMessage, config);
+        smtpAdapter.start(context);
     }
 
     @After
@@ -61,16 +69,62 @@ public class SmtpAdapterTest extends DigiqCamelTestBase {
     @Test
     public void adapterShouldReceiveAndStoreMail() throws Exception {
         sendMail("localhost", config.getSmtpPort());
-        
-        Thread.sleep(2000); //TODO: fix with better await-logic
-        
+
+        Thread.sleep(2000); // TODO: fix with better await-logic
+
         List<Message> messges = em.createQuery("from " + Message.class.getSimpleName(), Message.class).getResultList();
-        
+
         Message body = messges.get(0);
 
         assertNotNull(body);
         assertEquals(DIGIPOSTADRESS, body.digipostAddress);
         TestUtil.assertPdfContent(IOUtils.toByteArray(fileStore.read(body)));
+    }
+
+    @Test
+    public void shouldBeAbleToFetchMailViaPop() throws Exception {
+        assertEquals(0, fetchMail().length);
+        smtpAdapter.sent(new MessageBatch("digiid", null), Lists.newArrayList(MessageBuilder.newMessage().withChannel("smtp").build()));
+        Thread.sleep(100);
+        assertEquals(1, fetchMail().length);
+        javax.mail.Message singleMail = fetchMail()[0];
+    }
+
+    private javax.mail.Message[] fetchMail() {
+        javax.mail.Message[] messages;
+        try {
+            Store store = connect();
+
+            Folder inbox = store.getFolder("INBOX");
+            if (inbox == null || !inbox.exists()) {
+                throw new RuntimeException("Coiuld not find INBOX.");
+            }
+            inbox.open(Folder.READ_ONLY);
+            messages = inbox.getMessages();
+//            for (int i = 0; i < messages.length; i++) {
+//                messages[i] = inbox.getMessage(i);
+//            }
+            inbox.close(false);
+            store.close();
+            return messages;
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException("Feil ved henting av mail via POP3.", e);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Kunne ikke hente mail fra mailbox.", e);
+        }
+    }
+
+    private Store connect() throws MessagingException {
+        String host = "localhost";
+        int port = 25001;
+        String username = "user";
+        String password = "pass";
+        String provider = "pop3";
+
+        Session session = Session.getDefaultInstance(new Properties(), null);
+        Store store = session.getStore(provider);
+        store.connect(host, port, username, password);
+        return store;
     }
 
     private void sendMail(String host, int port) throws Exception {

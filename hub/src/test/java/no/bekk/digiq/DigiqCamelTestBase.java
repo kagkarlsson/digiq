@@ -3,6 +3,8 @@ package no.bekk.digiq;
 import java.io.File;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -34,6 +36,8 @@ public class DigiqCamelTestBase extends CamelTestSupport implements
     public TemporaryFolder tempFolder = new TemporaryFolder();
 	@Resource
 	protected JdbcTemplate jdbcTemplate;
+	@PersistenceContext
+	protected EntityManager em;
 	private ApplicationContext applicationContext;
     protected File store;
 

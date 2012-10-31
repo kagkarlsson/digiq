@@ -52,7 +52,7 @@ public class HubMain {
         }
 
         for (CamelChannel camelAdapter : springContext.getBeansOfType(CamelChannel.class).values()) {
-            camelAdapter.addTo(context);
+            camelAdapter.start(context);
         }
 
         context.start();

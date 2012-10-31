@@ -7,8 +7,10 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -20,9 +22,10 @@ public class MessageBatch {
 
     @Id
     @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "batch")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "batch", fetch = FetchType.EAGER)
     private List<Message> messages;
     
     @Column(name = "DIGIPOST_JOBB_ID")

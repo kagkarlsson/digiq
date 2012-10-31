@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -20,7 +19,6 @@ import no.digipost.xsd.avsender1_6.XmlMasseutsendelse;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Handler;
-import org.apache.camel.Message;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +28,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CreateDigipostZip {
-    
+
+    public static final String DIGIQ = "digiq_";
+
     private static final Logger LOG = LoggerFactory.getLogger(CreateDigipostZip.class);
 
     private final Jaxb2Marshaller marshaller;
@@ -44,13 +44,12 @@ public class CreateDigipostZip {
         this.config = config;
     }
 
-    @SuppressWarnings("unchecked")
     @Handler
     public void handle(Exchange exchange) {
         LOG.info("Creating Zip");
         MessageBatch messageBatch = exchange.getIn().getBody(MessageBatch.class);
         exchange.getOut().setBody(createZip(messageBatch));
-        exchange.getOut().setHeader("CamelFileName", "test1.zip");
+        exchange.getOut().setHeader("CamelFileName", DIGIQ + messageBatch.id + ".zip");
     }
 
     public InputStream createZip(MessageBatch messageBatch) {

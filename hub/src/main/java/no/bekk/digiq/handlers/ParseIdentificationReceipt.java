@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import no.bekk.digiq.model.Receipt;
 import no.bekk.digiq.util.ZipHelper;
 import no.digipost.xsd.avsender1_6.XmlJobbStatus;
 import no.digipost.xsd.avsender1_6.XmlMasseutsendelseResultat;
@@ -48,7 +49,7 @@ public class ParseIdentificationReceipt {
         if (FilenameUtils.isExtension(singleKey, "xml")) {
             XmlMasseutsendelseResultat result = (XmlMasseutsendelseResultat) unmarshaller.unmarshal(new BytesSource(content));
             parseReceipt(result);
-            exchange.getOut().setBody(result);
+            exchange.getOut().setBody(new Receipt(result));
         } else {
             LOG.error("A message was unparsable by Digipost.");
         }

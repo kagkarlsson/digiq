@@ -78,7 +78,7 @@ public class DigipostMailHandler implements MessageHandler {
             for (String recipient : recipients) {
 
                 if (RECIPIENT_PATTERN.matcher(recipient).matches()) {
-                    listener.received(new Forsendelse(subject, recipient, null, null, null, null, null, null, null, pdfAttachment));
+                    listener.received(new Forsendelse(subject, recipient, null, null, null, null, null, null, null, "smtp", pdfAttachment));
                 } else {
                     LOG.warn("Invalid recipient address '{}'. Not sending.", recipient);
                 }
@@ -103,7 +103,8 @@ public class DigipostMailHandler implements MessageHandler {
         for (int i = 0; i < multipart.getCount(); i++) {
             BodyPart part = multipart.getBodyPart(i);
             ContentType contentType = new ContentType(part.getContentType());
-            if (contentType.match("application/pdf")) {
+            String nameParameter = contentType.getParameter("name");
+            if ((nameParameter != null && nameParameter.endsWith(".pdf")) || contentType.match("application/pdf")) {
                 LOG.debug("Found pdf attachment.");
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 IOUtils.copy(part.getInputStream(), baos);

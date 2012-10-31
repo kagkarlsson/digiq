@@ -1,5 +1,5 @@
 
-Adapters fšr olika in-kanaler: 
+Olika channels som tar emot forsendelser: 
 - Mail-adapter  (todo. set subject etc.. ev. svara from-adress nŠr message skickat)
 - Fil-adapter
 - RMI-adapter

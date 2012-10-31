@@ -2,8 +2,8 @@ package no.bekk.digiq.channel;
 
 import org.apache.camel.CamelContext;
 
-public interface CamelChannel {
+public interface CamelChannel extends Channel {
 
-    void addTo(CamelContext context);
+    void start(CamelContext context);
 
 }
